@@ -14,21 +14,26 @@ class State(rx.State):
 
 def index() -> rx.Component:
     return rx.center(
-        rx.theme_panel(),
-        rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text("Get started by editing ", rx.code(filename)),
-            rx.button(
-                "Check out our docs!",
-                on_click=lambda: rx.redirect(docs_url),
-                size="4",
-            ),
-            rx.logo(),
-            align="center",
-            spacing="7",
-            font_size="2em",
+        rx.flex(
+             rx.hstack(
+              rx.flex(
+                  rx.text("JOIN THE"),
+                  rx.flex(
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      rx.text("JOIN THE",style={"padding":"6px"}),
+                      
+                  ),
+                  style={"justify-content":"space-between","width":"100%","padding":"34px"}
+              )   
+            
         ),
-        height="100vh",
+        style={"flex-direction":"column","width":"100%"}
+        ),
+
     )
 
 
