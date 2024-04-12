@@ -1,15 +1,15 @@
 # Crusadify Now
-Build shopify landing pages without writing code
+Build shopify landing pages without writing code.
 
 # Getting Started
 
-### 1. Clone the Repo
+### 1. Clone the Repo ©
 
 ```bash
 git clone https://github.com/Sakshamkhandelwal123/Crusadify-Now.git
 ```
 
-### 📦 2. Install Reflex
+### 2. Install Reflex 💻
 
 To get started with Reflex, you'll need:
 
@@ -23,7 +23,7 @@ Install `pip` dependencies with the provided `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### 🚀 3. Run the application
+### 3. Run the application 🏃‍♂️
 
 Initialize and run the app:
 
