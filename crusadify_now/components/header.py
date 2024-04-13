@@ -1,7 +1,7 @@
 import reflex as rx
 
 def header()->rx.Component:
-    return rx.box(
+    return rx.desktop_only(
            rx.hstack(
               rx.flex(
   rx.image(src="/logo.png", width="80px"),
