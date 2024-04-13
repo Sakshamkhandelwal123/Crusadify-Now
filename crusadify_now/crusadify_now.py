@@ -4,9 +4,11 @@ from rxconfig import config
 
 import reflex as rx
 
+from .shopify_connector import Store, install_app, oauth_callback
+from .user import User, login, signup
+
 docs_url = "https://reflex.dev/docs/getting-started/introduction/"
 filename = f"{config.app_name}/{config.app_name}.py"
-
 
 class State(rx.State):
     """The app state."""
@@ -31,6 +33,9 @@ def index() -> rx.Component:
         height="100vh",
     )
 
-
 app = rx.App()
 app.add_page(index)
+app.api.add_api_route("/install-app", install_app, methods=["GET"])
+app.api.add_api_route("/shopify/oauth/callback", oauth_callback, methods=["GET"])
+app.api.add_api_route("/login", login, methods=["POST"])
+app.api.add_api_route("/signup", signup, methods=["POST"])
