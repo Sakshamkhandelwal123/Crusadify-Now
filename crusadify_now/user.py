@@ -32,18 +32,18 @@ def signup(data: dict):
 
     user = create_user({"id": str(uuid.uuid4()), "email": email, "password": hashed_password, "name": data["name"]})
 
-    return {"message": "User created successfully"}
+    return {"message": "User created successfully"}, 201
   
-  return {"message": "User already exists"}
+  return {"message": "User already exists"}, 200
 
 def login(data: dict):
   if not data or not data["email"] or not data["password"]:
-    return {"message": "Please provide email and password"}
+    return {"message": "Please provide email and password"}, 400
   
   user = find_one_user({"email": data["email"]})
 
   if not user:
-    return {"message": "User not found"}
+    return {"message": "User not found"}, 404
   
   if pwd_context.verify(data["password"], user.password):
     token = jwt.encode({
@@ -51,9 +51,9 @@ def login(data: dict):
       "exp": datetime.utcnow() + timedelta(minutes=180)
     }, load["JWT_SECRET"])
 
-    return {"token": token.decode("utf-8")}
+    return {"token": token.decode("utf-8")}, 200
   
-  return {"message": "Invalid password"}
+  return {"message": "Invalid password"}, 401
 
 def build_query(model, filters):
     clauses = []

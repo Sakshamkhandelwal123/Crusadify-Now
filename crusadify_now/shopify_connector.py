@@ -8,6 +8,7 @@ import uuid
 from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
+import json
 
 load = dotenv_values()
 
@@ -26,13 +27,13 @@ class Store(rx.Model, table=True):
 def install_app(data: dict):
     try:
         shopify_api_key = load["SHOPIFY_API_KEY"]
-        scopes = "read_products,read_orders,read_analytics,read_orders,read_product_feeds,read_product_listings,read_products"
+        scopes = "read_products,read_orders,read_analytics,read_orders,read_product_feeds,read_product_listings,read_products,write_content,read_content"
 
         shop = data["storeName"]
         email = data["email"]
 
         if not shop:
-            return {"message": "Shop parameter is missing"}
+            return {"message": "Store name is missing"}
 
         store_data = find_one_store({"store_name": shop})
 
@@ -80,6 +81,38 @@ def oauth_callback(code, shop, state):
     update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
     
     return response.json()
+
+def publish_page(data: dict):
+    try:
+        print(data)
+        shop = data["storeName"]
+        access_token = data["accessToken"]
+        page_name = data["pageName"]
+        headers = {
+            'X-Shopify-Access-Token': access_token,
+            'Content-Type': 'application/json'
+        }
+        payload = json.dumps({
+            "page": {
+                "title": f"{page_name}",
+                "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>",
+                "metafields": [
+                {
+                    "key": "new",
+                    "value": "new value",
+                    "type": "single_line_text_field",
+                    "namespace": "global"
+                }
+                ]
+            }
+        })
+        res = requests.post(f"https://{shop}.myshopify.com/admin/api/2024-01/pages.json", headers=headers, data=payload)
+        print(res)
+        print(res.json())
+        return res.json()
+    except Exception as e:
+        print(e)
+        return {"error": e}
 
 def build_query(model, filters):
     clauses = []
