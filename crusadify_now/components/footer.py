@@ -13,9 +13,8 @@ def footer()->rx.Component:
              display="flex",
              ),
                   rx.flex(
-                      rx.text("Privacy policy",style={"padding":"6px"}),
-                      rx.text("Product updates",style={"padding":"6px"}),
-                      rx.text("Terms of service",style={"padding":"6px"}),   
+                      rx.text("@built by Crusaders",style={"padding":"6px"}),
+                         
                        width=["100%","100%","50%","50%","50%"] ,
                                  justify="end",
                                   style={
