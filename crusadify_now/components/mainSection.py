@@ -9,12 +9,15 @@ def mainSection()->rx.Component:
             rx.text("With Instant, you can bid farewell to the frustrations of coding and embrace the freedom of visual design. Our intuitive drag-and-drop interface puts the power of creation right at your fingertips, allowing you to effortlessly arrange elements, customize layouts, and bring your vision to life with unparalleled ease."),
             rx.text("Envision Your Dream Store, Realized"),
             rx.text("Instant's all-visual builder is a true game-changer, offering an unparalleled level of control and flexibility. Whether you're looking to create a captivating home page, an immersive product showcase, or a seamless checkout experience, our feature-rich platform has everything you need to make your dream store a reality."),
+           width=["100%","100%","100%","50%","50%"],
+
            style={"flex-direction":"column"}
             ),
- rx.image(src="/template.png"),
-            style={"justify-content":"center","padding":"36px"},
-            align_items="center"
-        
+           rx.image(src="/template.png",width=["100%","100%","100%","40%","40%"],padding=["40px 0px","40px 0px","40px 0px","0px"]),
+            style={"padding":"56px","flex-wrap":"wrap"},
+            align_items="center",
+                       justify="between",
+                    
         ),
         rx.flex(  rx.text("Features",style={"padding":"12px","color":"#0199B9","font-weight":"600"}),
                 rx.heading("And there’s more! ",style={"padding":"12px",}),
