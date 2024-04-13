@@ -22,6 +22,12 @@ hero_btn_style = dict(
     padding="20px 40px",
     margin="20px 0",
     cursor="pointer",
+    border="1px solid black",
+    transition="0.2s",
+    _hover=dict(
+        background_color="transparent",
+        color="black",
+    )
 )
 
 top_nav_tab_style = dict(
@@ -49,7 +55,7 @@ login_btn_style = dict(
     transition="0.2s",
     background_color="black",
     _hover=dict(
-        background_color="#7ACAA9",
+        background_color="transparent",
         color="black",
     )
 )
