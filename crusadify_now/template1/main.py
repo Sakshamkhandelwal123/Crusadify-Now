@@ -8,7 +8,7 @@ from crusadify_now.editorState import EditorState
 from crusadify_now.components.editor import editor
 from crusadify_now.components.editor import quoteTextarea
 
-def floating_button():
+def floating_edit_button():
     return rx.button(
         rx.image(
             src="/template1/pencil.png", 
@@ -20,6 +20,23 @@ def floating_button():
         border= "none", 
         cursor= "pointer",
         boxShadow= "0 10px 25px -5px rgba(1, 1, 1, 0.2)",
+    )
+
+def floating_preview_button():
+    return rx.flex(
+        rx.image(
+            src="/template1/pencil.png", 
+            width="16px", 
+        ), 
+        rx.image(
+            src="/template1/pencil.png", 
+            width="16px", 
+        ), 
+        position= "fixed", 
+        top= "0", 
+        right= "0", 
+        border= "none", 
+        cursor= "pointer",
     )
 
 
@@ -35,7 +52,7 @@ def template1() -> rx.Component:
         #     padding="1em",
         # ),
         rx.drawer.root(
-            rx.drawer.trigger(floating_button()),
+            rx.drawer.trigger(floating_edit_button()),
             rx.drawer.portal(
                 rx.drawer.content(
                     rx.flex(
@@ -78,6 +95,7 @@ def template1() -> rx.Component:
             direction="right",
             modal=False,
         ),
+        # floating_preview_button(),
         width="100vw",
      )
      
