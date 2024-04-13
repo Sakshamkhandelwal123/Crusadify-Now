@@ -7,6 +7,9 @@ import urllib.parse
 import uuid
 from sqlmodel import Field
 from datetime import datetime
+from dotenv import dotenv_values
+
+load = dotenv_values()
 
 class Store(rx.Model, table=True):
     __tablename__ = "stores"
@@ -20,13 +23,13 @@ class Store(rx.Model, table=True):
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
     updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
-def install_app():
+def install_app(data: dict):
     try:
-        shopify_api_key = "16e192678ac8adfbc732058400ccc920"
+        shopify_api_key = load["SHOPIFY_API_KEY"]
         scopes = "read_products,read_orders,read_analytics,read_orders,read_product_feeds,read_product_listings,read_products"
 
-        shop = "test-crusadify"
-        email = "sakshamk@gluelabs.com"
+        shop = data["storeName"]
+        email = data["email"]
 
         if not shop:
             return {"message": "Shop parameter is missing"}
@@ -53,8 +56,8 @@ def install_app():
         return {"error": e}
 
 def oauth_callback(code, shop, state):
-    apiKey = "16e192678ac8adfbc732058400ccc920"
-    apiSecret = "042eac611ee27bd18c863fe058124b20"
+    apiKey = load["SHOPIFY_API_KEY"]
+    apiSecret = load["SHOPIFY_API_SECRET"]
 
     accessTokenUrl = f"https://{shop}/admin/oauth/access_token"
     accessParams = {

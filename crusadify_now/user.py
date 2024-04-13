@@ -49,7 +49,7 @@ def login(data: dict):
     token = jwt.encode({
       "email": user.email,
       "exp": datetime.utcnow() + timedelta(minutes=180)
-    }, load["SECRET_KEY"])
+    }, load["JWT_SECRET"])
 
     return {"token": token.decode("utf-8")}
   
