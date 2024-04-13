@@ -31,14 +31,14 @@ def index() -> rx.Component:
         height="100vh",
     )
 
-def topNav(logo, topNavItems , heroBtnTxt) -> rx.Component:
+def topNav(logo, topNavItems , heroBtnTxt, storeUrl) -> rx.Component:
     return rx.box(
         rx.hstack(
             rx.image(src=logo, width="150px"),
             rx.hstack(
                 *[rx.link(item["label"], href=item["href"], style=style.top_nav_tab_style) for item in topNavItems],
             ),
-            rx.button(heroBtnTxt, style=style.login_btn_style),
+            rx.button(heroBtnTxt, style=style.login_btn_style, on_click=lambda: rx.redirect(storeUrl)),
             align="center",
             justify="between",
             width="100%",
@@ -50,20 +50,20 @@ def topNav(logo, topNavItems , heroBtnTxt) -> rx.Component:
         width="100%",
     )
 
-def heroSection(heroTxt, heroSubTxt, heroBtnTxt) -> rx.Component:
+def heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
     return rx.vstack(
         rx.text(heroTxt, style=style.hero_txt_style),
         rx.text(heroSubTxt, style=style.hero_sub_txt_style),
-        rx.button(heroBtnTxt, style=style.hero_btn_style),
+        rx.button(heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(storeUrl)),
     )
 
 def heroImage(heroImg) -> rx.Component:
     return  rx.image(src=heroImg, max_width="800px")
     
-def header(heroTxt, heroSubTxt, heroBtnTxt) -> rx.Component:
+def header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
     return rx.box(
         rx.hstack(
-            heroSection(heroTxt, heroSubTxt, heroBtnTxt),
+            heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
             heroImage("/template1/beige.png"),
             align="center",
             justify="center",
@@ -127,25 +127,38 @@ def body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote) -> rx.Compone
         padding="40px 0px",
     )
 
-def footer(footerTxt) -> rx.Component:
-    return rx.hstack(
-        rx.box(footerTxt, size="4"),
+def footer(footerTxt, heroBtnTxt, logo, storeUrl) -> rx.Component:
+    return rx.vstack(
+        rx.text(footerTxt, size="4", font_size="72px", text_align="center", width="100%", font_weight="bold", margin="0px 0px 20px 0px"),
+        rx.button(heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(storeUrl)),
+        rx.image(src=logo, width="150px"),
+        rx.link(storeUrl, href=storeUrl, font_size="24px", color= "black", text_align="center", text_decoration="underline", width="100%"),
         align="center",
-        spacing="4",
-        font_size="1.5em",
+        width="100%",
+        padding="60px 0px",
     )
 
 def templates() -> rx.Component:
+
+    # Variables
+
+    logo = "/template1/logo.png"
+    heroTxt = "A new kind of soda"
+    heroSubTxt = "20+ refreshing flavours, with less sugar"
+    heroBtnTxt = "Shop now"
     topNavItems = [{"label": "Home", "href": "/"}, {"label": "About", "href": "/about"}, {"label": "Contact", "href": "/contact"}, {"label": "Shop", "href": "/shop"}, {"label": "Blog", "href": "/blog"}]
     bodySection1Txt= "Seen the word COLD on our cans? \nWell, they're printed with a special thermo-reactive ink which means it changes colour to blue when the tasty beverage inside is NICE AND COLD. \nCheers science, you're a real pal."
     bodySection2Txt= "As well as being labelled 'THE BEST TASTING ONE' Pals are ALL-NATURAL, low in sugar, GLUTEN FREE, VEGAN FRIENDLY AND free from artificial colours, sweeteners, preservatives and ingredients you can’t pronounce. Basically, we’ve shown bad stuff the door and told good stuff to get on over here because the sun’s out, the music’s on and all our pals (with Pals) are here. "
     bodySection3Txt= "Our cans are filled with nothing but the best PREMIUM SPIRITS and REAL FRUIT extracts from prime fruit producing regions – to create one hell of a tasty drink. Like that drink you’d mix yourself if you could just get your hands on a clean glass, a couple of lemons and an award-winning mixologist."
     quote="We have always believed there is more to business than just offering a product or service."
+    footerTxt = "Let's be pals!"
+    storeUrl = "https://pals.com"
+
     return rx.vstack(
-            topNav("/template1/logo.png", topNavItems, "Shop now"),
-            header("A new kind of soda", "20+ refreshing flavours, with less sugar", "Shop now"),
+            topNav(logo, topNavItems, heroBtnTxt, storeUrl),
+            header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
             body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote),
-            footer("Join the crusade!"),
+            footer(footerTxt, heroBtnTxt, logo, storeUrl),
             align="center",
             spacing="0",
             font_size="1.5em",
