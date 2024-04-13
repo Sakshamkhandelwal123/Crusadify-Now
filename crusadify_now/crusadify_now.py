@@ -34,11 +34,11 @@ def index() -> rx.Component:
 def topNav(logo, topNavItems , heroBtnTxt, storeUrl) -> rx.Component:
     return rx.box(
         rx.hstack(
-            rx.image(src=logo, width="150px"),
+            rx.image(src=logo, width=["250px","250px","150px","150px","150px"], margin=["0px auto","0px auto","0px","0px","0px"]),
             rx.hstack(
                 *[rx.link(item["label"], href=item["href"], style=style.top_nav_tab_style) for item in topNavItems],
             ),
-            rx.button(heroBtnTxt, style=style.login_btn_style, on_click=lambda: rx.redirect(storeUrl)),
+            rx.button(heroBtnTxt, style=style.top_nav_btn_style, on_click=lambda: rx.redirect(storeUrl)),
             align="center",
             justify="between",
             width="100%",
@@ -51,23 +51,25 @@ def topNav(logo, topNavItems , heroBtnTxt, storeUrl) -> rx.Component:
     )
 
 def heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
-    return rx.vstack(
+    return rx.flex(
         rx.text(heroTxt, style=style.hero_txt_style),
         rx.text(heroSubTxt, style=style.hero_sub_txt_style),
         rx.button(heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(storeUrl)),
+        flex_direction="column",
     )
 
 def heroImage(heroImg) -> rx.Component:
-    return  rx.image(src=heroImg, max_width="800px")
+    return  rx.image(src=heroImg, max_width=[ "300px","400px","400px","600px","800px"])
     
 def header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
     return rx.box(
-        rx.hstack(
+        rx.flex(
             heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
             heroImage("/template1/beige.png"),
             align="center",
             justify="center",
             spacing="4",
+            flex_direction=["column-reverse", "column", "row", "row", "row"],
         ),
         align="center",
         spacing="4",
@@ -76,60 +78,43 @@ def header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
         width="100%",
     )
 
-def body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote) -> rx.Component:
+def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, isReverse = False) -> rx.Component:
+    return rx.box(
+        rx.flex(
+            rx.image(src=bodyFeatureImg, max_width=["300px","300px","400px","500px","600px"]),
+            rx.text(bodyFeatureTxt, style=style.hero_sub_txt_style, max_width=["500px","500px","400px","500px","600px"]),
+            width="100%",
+            align="center",
+            justify="center",
+            spacing="9",
+            flex_direction=["column", "column", "row-reverse" if isReverse else "row", "row-reverse" if isReverse else "row", "row-reverse" if isReverse else "row"],
+        ),
+        width="100%",
+        padding="40px 30px",
+    )
+
+
+def body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor) -> rx.Component:
     return rx.vstack(
-        rx.box(
-            rx.hstack(
-                rx.image(src="/template1/single-can.webp", max_width="600px"),
-                rx.text(bodySection1Txt, style=style.hero_sub_txt_style, max_width="600px"),
-                width="100%",
-                align="center",
-                justify="center",
-                spacing="9",
-            ),
-            width="100%",
-            padding="40px 30px",
-        ),
-         rx.box(
-            rx.hstack(
-                rx.text(bodySection2Txt, style=style.hero_sub_txt_style, max_width="600px"),
-                rx.image(src="/template1/multiple-cans.webp", max_width="600px"),
-                width="100%",
-                align="center",
-                justify="center",
-                spacing="9",
-            ),
-            width="100%",
-            padding="40px 30px",
-        ),
-        rx.box(
-            rx.hstack(
-                rx.image(src="/template1/pour-purple.webp", max_width="600px"),
-                rx.text(bodySection3Txt, style=style.hero_sub_txt_style, max_width="600px"),
-                width="100%",
-                align="center",
-                justify="center",
-                spacing="9",
-            ),
-            width="100%",
-            padding="40px 30px",
-        ),
+        bodyFeatureSection(bodySection1Txt, "/template1/single-can.webp"),
+        bodyFeatureSection(bodySection2Txt, "/template1/multiple-cans.webp", True),
+        bodyFeatureSection(bodySection3Txt, "/template1/pour-purple.webp"),
          rx.center(
-            rx.text('"' + quote + '"',  font_style="italic", text_decoration="underline", max_width="1200px", text_align="center", text_decoration_thickness="10px", text_decoration_color="#7ACAA9"),
+            rx.text('"' + quote + '"', style= style.quote_txt_style, text_decoration_color=secondaryColor),
             width="100%",
             padding="40px 30px",
         ),
 
         align="center",
         font_size="1.5em",
-        background_color="#F1EBDC",
+        background_color=tertiaryColor,
         width="100%",
         padding="40px 0px",
     )
 
 def footer(footerTxt, heroBtnTxt, logo, storeUrl) -> rx.Component:
     return rx.vstack(
-        rx.text(footerTxt, size="4", font_size="72px", text_align="center", width="100%", font_weight="bold", margin="0px 0px 20px 0px"),
+        rx.text(footerTxt, style=style.footer_txt_style),
         rx.button(heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(storeUrl)),
         rx.image(src=logo, width="150px"),
         rx.link(storeUrl, href=storeUrl, font_size="24px", color= "black", text_align="center", text_decoration="underline", width="100%"),
@@ -138,9 +123,12 @@ def footer(footerTxt, heroBtnTxt, logo, storeUrl) -> rx.Component:
         padding="60px 0px",
     )
 
-def templates() -> rx.Component:
+def template1() -> rx.Component:
 
     # Variables
+    primaryColor = "#EE8F4E"
+    secondaryColor = "#7ACAA9"
+    tertiaryColor = "#F1EBDC"
 
     logo = "/template1/logo.png"
     heroTxt = "A new kind of soda"
@@ -157,17 +145,17 @@ def templates() -> rx.Component:
     return rx.vstack(
             topNav(logo, topNavItems, heroBtnTxt, storeUrl),
             header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
-            body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote),
+            body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor),
             footer(footerTxt, heroBtnTxt, logo, storeUrl),
             align="center",
             spacing="0",
             font_size="1.5em",
             width="100vw",
-            background_color="#EE8F4E",
+            background_color=primaryColor,
      )
     
 
 
 app = rx.App()
 app.add_page(index)
-app.add_page(templates)
+app.add_page(template1)
