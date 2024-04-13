@@ -2,7 +2,7 @@ import reflex as rx
 
 hero_txt_style = dict(
     font_weight="bold",
-    font_size="72px",
+    font_size="96px",
     color=["pink", "green", "red", "purple", "black"],
     line_height="1",
     max_width="500px",

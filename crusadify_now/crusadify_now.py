@@ -92,7 +92,7 @@ def body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote) -> rx.Compone
         ),
          rx.box(
             rx.hstack(
-                rx.text(bodySection1Txt, style=style.hero_sub_txt_style, max_width="600px"),
+                rx.text(bodySection2Txt, style=style.hero_sub_txt_style, max_width="600px"),
                 rx.image(src="/template1/multiple-cans.webp", max_width="600px"),
                 width="100%",
                 align="center",
@@ -143,14 +143,14 @@ def templates() -> rx.Component:
     quote="We have always believed there is more to business than just offering a product or service."
     return rx.vstack(
             topNav("/template1/logo.png", topNavItems, "Shop now"),
-            header("A new kind of soda.", "20+ refreshing flavours, with less sugar", "Shop now"),
+            header("A new kind of soda", "20+ refreshing flavours, with less sugar", "Shop now"),
             body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote),
             footer("Join the crusade!"),
             align="center",
             spacing="0",
             font_size="1.5em",
             width="100vw",
-            background_color="#7ACAA9",
+            background_color="#EE8F4E",
      )
     
 
