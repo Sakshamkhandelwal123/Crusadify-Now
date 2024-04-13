@@ -27,6 +27,7 @@ def heroSection() -> rx.Component:
             on_click=lambda: rx.redirect(EditorState.storeUrl)
             ),
         flex_direction="column",
+        text_align=["center", "center", "left", "left", "left"],
     )
 
 def heroImage(heroImg) -> rx.Component:
