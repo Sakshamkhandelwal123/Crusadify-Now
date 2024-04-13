@@ -6,7 +6,6 @@ from crusadify_now.template1.body import body
 from crusadify_now.template1.footer import footer
 
 def template1() -> rx.Component:
-
     # Variables
     primaryColor = "#EE8F4E"
     secondaryColor = "#7ACAA9"
@@ -25,15 +24,14 @@ def template1() -> rx.Component:
     storeUrl = "https://pals.com"
 
     return rx.vstack(
-            topNav(logo, topNavItems, heroBtnTxt, storeUrl),
-            header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
-            body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor),
-            footer(footerTxt, heroBtnTxt, logo, storeUrl),
-            align="center",
-            spacing="0",
-            font_size="1.5em",
-            width="100vw",
-            background_color=primaryColor,
+        topNav(logo, topNavItems, heroBtnTxt, storeUrl),
+        header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
+        body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor),
+        footer(footerTxt, heroBtnTxt, logo, storeUrl),
+        align="center",
+        spacing="0",
+        font_size="1.5em",
+        width="100vw",
+        background_color=primaryColor,
      )
      
-     app.add_page(template1)
