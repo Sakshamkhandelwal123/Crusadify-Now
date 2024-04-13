@@ -1,14 +1,6 @@
-<<<<<<< HEAD
-*.db
-*.py[cod]
-.web
-__pycache__/
-venv/
-=======
 *.db
 *.py[cod]
 .web
 __pycache__/
 venv/
 .venv/
->>>>>>> 766cad7e1f2ff4f6e3e3d8bd150099555ea4eee7
