@@ -29,8 +29,12 @@ def login():
             ),
             
 
-            rx.button("Login", style={"padding":"24px"}),
-            rx.link("Signup here", href="/signup",style={"padding-top":"24px"}),
+            rx.button("Login", style={"padding":"24px"},
+                      cursor="pointer"
+                      ),
+            rx.link("Signup here", href="/signup",style={"padding-top":"24px"},
+                        cursor="pointer"
+                    ),
             style={"flex-direction":"column","width":"100%"}
            )
         ),

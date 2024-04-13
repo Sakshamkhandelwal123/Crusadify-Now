@@ -16,6 +16,7 @@ def signup() -> rx.Component:
                         color="hsl(240, 5%, 64.9%)",
                         margin_top="2px",
                         margin_bottom="4px",
+                        
                     ),
                     rx.input(
                         placeholder="email_id",
