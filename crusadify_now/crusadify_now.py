@@ -8,6 +8,7 @@ from .components.header import header
 from .components.headerNext import headerNext
 from .components.mainSection import mainSection
 from .components.footer import footer
+from .components.login import login
 
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction/"
@@ -29,3 +30,4 @@ style={"font-size":"16px","font-weight":"400",}
 
 app = rx.App()
 app.add_page(index)
+app.add_page(login)
