@@ -1,11 +1,22 @@
 import reflex as rx
 from crusadify_now import style
+from crusadify_now.editorState import EditorState
 
-def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, isReverse = False) -> rx.Component:
+def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, bodySectionKey, isReverse = False) -> rx.Component:
     return rx.box(
         rx.flex(
             rx.image(src=bodyFeatureImg, max_width=["300px","300px","400px","500px","600px"]),
-            rx.text(bodyFeatureTxt, style=style.hero_sub_txt_style, max_width=["500px","500px","400px","500px","600px"]),
+            rx.html(
+                bodyFeatureTxt, 
+                style=style.hero_sub_txt_style, 
+                max_width=["500px","500px","400px","500px","600px"],
+                border = rx.cond(
+                    (EditorState.currentKey) == bodySectionKey,
+                    "1px solid black",
+                    "none"
+                ),
+                on_click=EditorState.set_content(bodyFeatureTxt, bodySectionKey)
+                ),
             width="100%",
             align="center",
             justify="center",
@@ -17,13 +28,23 @@ def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, isReverse = False) -> rx.
     )
 
 
-def body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor) -> rx.Component:
+def body(secondaryColor, tertiaryColor) -> rx.Component:
     return rx.vstack(
-        bodyFeatureSection(bodySection1Txt, "/template1/single-can.webp"),
-        bodyFeatureSection(bodySection2Txt, "/template1/multiple-cans.webp", True),
-        bodyFeatureSection(bodySection3Txt, "/template1/pour-purple.webp"),
-         rx.center(
-            rx.text('"' + quote + '"', style= style.quote_txt_style, text_decoration_color=secondaryColor),
+        bodyFeatureSection(EditorState.bodySection1Txt, "/template1/single-can.webp", "bodySection1Txt"),
+        bodyFeatureSection(EditorState.bodySection2Txt, "/template1/multiple-cans.webp","bodySection2Txt", True),
+        bodyFeatureSection(EditorState.bodySection3Txt, "/template1/pour-purple.webp", "bodySection3Txt"),
+        rx.center(
+            rx.text(
+                '"' + EditorState.quote + '"',
+                border = rx.cond(
+                    (EditorState.currentKey) == "quote",
+                    "1px solid black",
+                    "none"
+                ),
+                style= style.quote_txt_style, 
+                text_decoration_color=secondaryColor, 
+                on_click=EditorState.set_content(EditorState.quote, "quote")
+            ),
             width="100%",
             padding="40px 30px",
         ),

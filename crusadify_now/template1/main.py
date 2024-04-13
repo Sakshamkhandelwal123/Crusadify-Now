@@ -4,34 +4,80 @@ from crusadify_now.template1.topNav import topNav
 from crusadify_now.template1.header import header
 from crusadify_now.template1.body import body
 from crusadify_now.template1.footer import footer
+from crusadify_now.editorState import EditorState
+from crusadify_now.components.editor import editor
+from crusadify_now.components.editor import quoteTextarea
+
+def floating_button():
+    return rx.button(
+        rx.image(
+            src="/template1/pencil.png", 
+            width="16px", 
+            ), 
+        position= "fixed", 
+        bottom= "20px", 
+        right= "20px", 
+        border= "none", 
+        cursor= "pointer",
+        boxShadow= "0 10px 25px -5px rgba(1, 1, 1, 0.2)",
+    )
+
 
 def template1() -> rx.Component:
-    # Variables
-    primaryColor = "#EE8F4E"
-    secondaryColor = "#7ACAA9"
-    tertiaryColor = "#F1EBDC"
-
-    logo = "/template1/logo.png"
-    heroTxt = "A new kind of soda"
-    heroSubTxt = "20+ refreshing flavours, with less sugar"
-    heroBtnTxt = "Shop now"
-    topNavItems = [{"label": "Home", "href": "/"}, {"label": "About", "href": "/about"}, {"label": "Contact", "href": "/contact"}, {"label": "Shop", "href": "/shop"}, {"label": "Blog", "href": "/blog"}]
-    bodySection1Txt= "Seen the word COLD on our cans? \nWell, they're printed with a special thermo-reactive ink which means it changes colour to blue when the tasty beverage inside is NICE AND COLD. \nCheers science, you're a real pal."
-    bodySection2Txt= "As well as being labelled 'THE BEST TASTING ONE' Pals are ALL-NATURAL, low in sugar, GLUTEN FREE, VEGAN FRIENDLY AND free from artificial colours, sweeteners, preservatives and ingredients you can’t pronounce. Basically, we’ve shown bad stuff the door and told good stuff to get on over here because the sun’s out, the music’s on and all our pals (with Pals) are here. "
-    bodySection3Txt= "Our cans are filled with nothing but the best PREMIUM SPIRITS and REAL FRUIT extracts from prime fruit producing regions – to create one hell of a tasty drink. Like that drink you’d mix yourself if you could just get your hands on a clean glass, a couple of lemons and an award-winning mixologist."
-    quote="We have always believed there is more to business than just offering a product or service."
-    footerTxt = "Let's be pals!"
-    storeUrl = "https://pals.com"
 
     return rx.vstack(
-        topNav(logo, topNavItems, heroBtnTxt, storeUrl),
-        header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
-        body(bodySection1Txt, bodySection2Txt, bodySection3Txt, quote, secondaryColor, tertiaryColor),
-        footer(footerTxt, heroBtnTxt, logo, storeUrl),
-        align="center",
-        spacing="0",
-        font_size="1.5em",
+        # rx.hstack(
+        #     rx.text("Panel"),
+        #     rx.button("Publish", style=style.publish_btn_style),
+        #     width="100%",
+        #     justify="between",
+        #     align="center",
+        #     padding="1em",
+        # ),
+        rx.drawer.root(
+            rx.drawer.trigger(floating_button()),
+            rx.drawer.portal(
+                rx.drawer.content(
+                    rx.flex(
+                        rx.drawer.close(rx.box("Close")),
+                        rx.text("Style", font_weight="bold", font_size="1.5em", padding="1em 0"),
+                        rx.cond(
+                            (EditorState.currentKey) == "quote",
+                            quoteTextarea(),
+                            editor(),
+                        ),
+                        align_items="start",
+                        direction="column",
+                    ),
+                    top="auto",
+                    left="auto",
+                    height="100%",
+                    width="30em",
+                    padding="2em",
+                    background_color="white",
+                    border="1px solid black",
+                )
+            ),
+            rx.hstack(
+                rx.box(
+                    rx.vstack(
+                        topNav(),
+                        header(),
+                        body(EditorState.secondaryColor, EditorState.tertiaryColor),
+                        footer(),
+                        align="center",
+                        spacing="0",
+                        font_size="1.5em",
+                        background_color=EditorState.primaryColor,
+                    ),
+                    width="100%",
+                ),
+                width="100%",
+                spacing="0",
+            ),
+            direction="right",
+            modal=False,
+        ),
         width="100vw",
-        background_color=primaryColor,
      )
      
