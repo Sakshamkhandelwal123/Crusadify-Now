@@ -30,7 +30,7 @@ def login():
             
 
             rx.button("Login", style={"padding":"24px"}),
-            rx.link("Signup here", href="/register",style={"padding-top":"24px"}),
+            rx.link("Signup here", href="/signup",style={"padding-top":"24px"}),
             style={"flex-direction":"column","width":"100%"}
            )
         ),
