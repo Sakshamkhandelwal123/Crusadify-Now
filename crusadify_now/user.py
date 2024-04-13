@@ -21,37 +21,35 @@ class User(rx.Model, table=True):
   created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
   updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
-def signup(data):
-  email = data.email
-  password = data.password
+def signup(data: dict):
+  email = data["email"]
+  password = data["password"]
 
   user = find_one_user({"email": email})
 
   if not user:
     hashed_password = pwd_context.hash(password)
 
-    user = create_user({"id": str(uuid.uuid4()), "email": email, "password": hashed_password, "name": data.name})
+    user = create_user({"id": str(uuid.uuid4()), "email": email, "password": hashed_password, "name": data["name"]})
 
     return {"message": "User created successfully"}
   
   return {"message": "User already exists"}
 
-def login(data):
-  if not data or not data.email or not data.password:
+def login(data: dict):
+  if not data or not data["email"] or not data["password"]:
     return {"message": "Please provide email and password"}
   
-  user = find_one_user({"email": data.email})
+  user = find_one_user({"email": data["email"]})
 
   if not user:
     return {"message": "User not found"}
   
-  if pwd_context.verify(data.password, user.password):
+  if pwd_context.verify(data["password"], user.password):
     token = jwt.encode({
       "email": user.email,
       "exp": datetime.utcnow() + timedelta(minutes=180)
     }, load["SECRET_KEY"])
-
-    rx.Cookie("access_token", token, max_age=180*60)
 
     return {"token": token.decode("utf-8")}
   
