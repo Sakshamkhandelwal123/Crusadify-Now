@@ -19,7 +19,7 @@ def mainSection()->rx.Component:
                        justify="between",
                     
         ),
-        rx.flex(  rx.text("Features",style={"padding":"12px","color":"#0199B9","font-weight":"600"}),
+        rx.flex( rx.text("Features",style={"padding":"12px","color":"#0199B9","font-weight":"600"}),
                 rx.heading("And there’s more! ",style={"padding":"12px",}),
                 rx.text("Crusader's feature set is constantly growing, just like the possibilities of what you can achieve.",style={"padding":"12px","font-weight":"bold","text-align":"center"}),
                 justify="center",
@@ -66,13 +66,17 @@ rx.text("Sections built with Instant will work seamlessly with all of the Shopif
         rx.flex(
         rx.flex(
             rx.heading("Unlock the Power of Conversion Optimization with A/B Testing",style={"padding":"36px","font-size":"36px","line-height":"1.2"}),
-rx.text("A/B testing empowers you to make data-driven decisions, eliminating the guesswork and intuition-based approaches that can often lead to suboptimal results. By systematically testing and analyzing various elements, such as headlines, calls-to-action, layouts, or copy, you can identify the winning variations that resonate most effectively with your target audience.",style={"padding":"0px 36px"}),
-style={"flex-direction":"column",}
+rx.text("A/B testing empowers you to make data-driven decisions, eliminating the guesswork and intuition-based approaches that can often lead to suboptimal results. By systematically testing and analyzing various elements, such as headlines, calls-to-action, layouts, or copy, you can identify the winning variations that resonate most effectively with your target audience.",
+        style={"padding":"0px 36px"}),
+style={"flex-direction":"column",},
+width=["100%","100%","100%","50%","50%"]
         ),
-         rx.image(src="/shopify.png",width="50%", style={"padding":"36px"}),
+         rx.image(src="/shopify.png",width=["100%","100%","100%","50%","50%"], style={"padding":"36px"}),
            justify="between",
-          
+         flex_wrap="wrap",  
     ),
-         style={"margin-top":"36px","background-color":"#F8FDB7",}
+         style={"margin-top":"36px","background-color":"#F8FDB7",},
+
    ),
+   
    )
