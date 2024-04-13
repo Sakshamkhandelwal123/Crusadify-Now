@@ -3,3 +3,4 @@ passlib
 bcrypt
 psycopg2
 PyJWT==1.7.1
+python-dotenv

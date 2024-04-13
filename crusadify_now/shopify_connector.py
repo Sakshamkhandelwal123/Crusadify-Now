@@ -34,7 +34,7 @@ def install_app():
         store_data = find_one_store({"store_name": shop})
 
         if not store_data:
-            create_store({"id": str(uuid.uuid4()), "store_name": shop, "email": email})
+            create_store({"id": str(uuid.uuid4()), "user_id": "1", "store_name": shop, "email": email})
 
         if store_data and store_data.is_app_install:
             return {"message": "App already installed"}

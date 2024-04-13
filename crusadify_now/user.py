@@ -5,6 +5,9 @@ from sqlalchemy import Column, DateTime, and_
 from passlib.context import CryptContext
 import uuid
 import jwt
+from dotenv import dotenv_values
+
+load = dotenv_values()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -46,7 +49,7 @@ def login(data):
     token = jwt.encode({
       "email": user.email,
       "exp": datetime.utcnow() + timedelta(minutes=180)
-    }, "SECRET_KEY")
+    }, load["SECRET_KEY"])
 
     rx.Cookie("access_token", token, max_age=180*60)
 
