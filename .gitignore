@@ -3,4 +3,8 @@
 .web
 __pycache__/
 venv/
+<<<<<<< HEAD
 .venv/
+=======
+.venv/
+>>>>>>> 0892a1e6bf0c010570ce2c15b11c1e8d89f55bd9

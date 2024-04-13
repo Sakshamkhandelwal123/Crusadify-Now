@@ -1,6 +1,7 @@
 """Welcome to Reflex! This file outlines the steps to create a basic app."""
 
 from rxconfig import config
+from crusadify_now import style
 
 import reflex as rx
 from .components.header import header
@@ -26,7 +27,5 @@ def index() -> rx.Component:
 style={"font-size":"16px","font-weight":"400",}
     )
 
-font_family_style = {"--framer-font-family": "Inter, sans-serif"}
-
-app = rx.App(global_style=font_family_style)
+app = rx.App()
 app.add_page(index)
