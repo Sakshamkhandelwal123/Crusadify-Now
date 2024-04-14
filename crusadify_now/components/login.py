@@ -6,25 +6,28 @@ import requests
 class LoginState(State):
     """Handle login form submission and redirect to dashboard."""
 
-    success: bool = False
+    isLoading: bool = False
     error_message: str = ""
     rx.Cookie(name="c6-custom-name")
 
     async def handle_login(self, form_data):
+        self.isLoading = True
         data = requests.post(
-            f"https://6aae-112-196-47-10.ngrok-free.app/login", json=form_data
+            f"https://fc56-112-196-47-10.ngrok-free.app/login", json=form_data
         ).json()
         print("github", data)
-        if data[1] == 200:
-            # rx.Cookie(data[0]["token"], max_age=180 * 60)
-            # self.set_auth_data("Shalini")
 
-            # rx.LocalStorage("shalini")
-            yield [rx.redirect("/dashboard"), LoginState.set_success(False)]
+        if data[1] == 200:
+            yield [rx.redirect("/dashboard"), LoginState.set_isLoading(False)]
+            self.isLoading = False
+        else:
+            self.isLoading = False
+            self.refresh()  # Trigger re-render
 
 
 @rx.page(route="/login")
 def login():
+    button_text = rx.cond(LoginState.isLoading, "Logging in............", "Login")
     return rx.center(
         rx.vstack(
             rx.form(
@@ -50,7 +53,12 @@ def login():
                             width="100%",
                             style={"margin-bottom": "24px"},
                         ),
-                        rx.button("Login", style={"padding": "24px"}, cursor="pointer"),
+                        rx.button(
+                            # rx.cond(LoginState.success, "Checkinggggggg...", "Login"),
+                            button_text,
+                            style={"padding": "24px"},
+                            cursor="pointer",
+                        ),
                         rx.link(
                             "Signup here",
                             href="/signup",

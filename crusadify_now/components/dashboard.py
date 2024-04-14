@@ -5,8 +5,12 @@ import reflex as rx
 def dashboard():
     return rx.vstack(
         rx.flex(
-            rx.button(
-                "Logout",
+            rx.link(
+                rx.button(
+                    "Logout",
+                ),
+                href="/login",
+                # todo: clear cookie
             ),
             justify_content="end",
             align_items="center",
