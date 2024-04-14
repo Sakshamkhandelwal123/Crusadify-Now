@@ -8,6 +8,8 @@ from .components.header import header
 from .components.headerNext import headerNext
 from .components.mainSection import mainSection
 from .components.footer import footer
+from .template1.main import template1
+
 from .components.login import login
 from .components.signup import signup
 from .components.create_new import create_new
@@ -37,6 +39,8 @@ def index() -> rx.Component:
 
 app = rx.App()
 app.add_page(index)
+app.add_page(template1)
+
 app.add_page(login)
 app.add_page(signup)
 app.add_page(create_new)
