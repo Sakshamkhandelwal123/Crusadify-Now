@@ -117,7 +117,7 @@ def publish_page(data: dict):
         json_response = response.json()
 
         update_page({"page_handle": json_response['page']['handle'], "page_name": page_name}, {"id": page_id})
-        return {"response": json_response, "url": f"https://{shop}.myshopify.com/pages/{json_response.handle}"}
+        return {"response": json_response, "url": f"https://{shop}.myshopify.com/pages/{json_response['page']['handle']}"}
     except Exception as e:
         print(e)
         return {"error": e}, 500
