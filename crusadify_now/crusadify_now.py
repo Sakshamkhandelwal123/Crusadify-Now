@@ -6,7 +6,7 @@ from crusadify_now import style
 import reflex as rx
 
 from .shopify_connector import Store, install_app, oauth_callback
-from .user import User, Authentication, login, signup, logout, get_user_details
+from .user import User, Authentication, signin, register, logout, get_user_details
 from .shopify_page import Page, get_page, get_all_pages, create_shopify_page, update_page, publish_page
 from .template import Template, get_template, get_all_templates, create_template, update_template
 from .components.header import header
@@ -49,8 +49,8 @@ app.api.add_api_route("/shopify/oauth/callback", oauth_callback, methods=["GET"]
 
 # User Routes
 app.api.add_api_route("/get-user-details", get_user_details, methods=["GET"])
-app.api.add_api_route("/login", login, methods=["POST"])
-app.api.add_api_route("/signup", signup, methods=["POST"])
+app.api.add_api_route("/login", signin, methods=["POST"])
+app.api.add_api_route("/signup", register, methods=["POST"])
 app.api.add_api_route("/logout", logout, methods=["POST"])
 
 # Page Routes

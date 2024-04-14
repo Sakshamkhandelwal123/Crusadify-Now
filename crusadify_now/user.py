@@ -31,7 +31,7 @@ class Authentication(rx.Model, table=True):
   created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
   updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
-def signup(data: dict):
+def register(data: dict):
   try:
       email = data["email"]
       password = data["password"]
@@ -56,7 +56,7 @@ def signup(data: dict):
       print(e)
       return {"error": e}
 
-def login(data: dict):
+def signin(data: dict):
   try:
       if not data or not data["email"] or not data["password"]:
         return {"message": "Please provide email and password"}, 400
