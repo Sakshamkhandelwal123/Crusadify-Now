@@ -6,8 +6,9 @@ from crusadify_now import style
 import reflex as rx
 
 from .shopify_connector import Store, install_app, oauth_callback
-from .shopify_page import publish_page
 from .user import User, Authentication, login, signup, logout, get_user_details
+from .shopify_page import Page, get_page, get_all_pages, create_shopify_page, update_page, publish_page
+from .template import Template, get_template, get_all_templates, create_template, update_template
 from .components.header import header
 from .components.headerNext import headerNext
 from .components.mainSection import mainSection
@@ -34,10 +35,26 @@ app = rx.App()
 app.add_page(index)
 app.add_page(login)
 app.add_page(signup)
+
+# Shopify Routes
 app.api.add_api_route("/install-app", install_app, methods=["GET"])
 app.api.add_api_route("/shopify/oauth/callback", oauth_callback, methods=["GET"])
+
+# User Routes
 app.api.add_api_route("/get-user-details", get_user_details, methods=["GET"])
 app.api.add_api_route("/login", login, methods=["POST"])
 app.api.add_api_route("/signup", signup, methods=["POST"])
 app.api.add_api_route("/logout", logout, methods=["POST"])
+
+# Page Routes
+app.api.add_api_route("/get-page", get_page, methods=["GET"])
+app.api.add_api_route("/get-all-pages", get_all_pages, methods=["GET"])
+app.api.add_api_route("/create-page", create_shopify_page, methods=["POST"])
 app.api.add_api_route("/publish-page", publish_page, methods=["POST"])
+app.api.add_api_route("/update-page", update_page, methods=["PUT"])
+
+# Template Routes
+app.api.add_api_route("/get-template", get_template, methods=["GET"])
+app.api.add_api_route("/get-all-templates", get_all_templates, methods=["GET"])
+app.api.add_api_route("/create-template", create_template, methods=["POST"])
+app.api.add_api_route("/update-template", update_template, methods=["PUT"])

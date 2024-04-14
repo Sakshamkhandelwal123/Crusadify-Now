@@ -8,6 +8,8 @@ import uuid
 from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
+from .shopify_page import update_page
+import importlib
 
 load = dotenv_values()
 
@@ -29,18 +31,28 @@ def install_app(data: dict):
         scopes = "read_products,read_orders,read_analytics,read_orders,read_product_feeds,read_product_listings,read_products,write_content,read_content"
 
         shop = data["storeName"]
-        email = data["email"]
+        user_id = data["userId"]
+        page_id = data["pageId"]
 
-        if not shop:
-            return {"message": "Store name is missing"}
+        if not shop or not user_id or not page_id:
+            return {"message": "Please provide store name, user id and page id"}, 400
+        
+        module = importlib.import_module("module")
+        
+        user = module.find_one_user({"id": data["userId"]})
+
+        if not user:
+            return {"message": "User not found"}, 404
 
         store_data = find_one_store({"store_name": shop})
 
         if not store_data:
-            create_store({"id": str(uuid.uuid4()), "user_id": "1", "store_name": shop, "email": email})
+            create_store({"id": str(uuid.uuid4()), "user_id": user_id, "store_name": shop})
 
         if store_data and store_data.is_app_install:
-            return {"message": "App already installed"}
+            update_page({"store_name": shop}, {"id": page_id})
+
+            return {"message": "App already installed"}, 200
 
         nonce = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
         redirect_uri = "http://localhost:8000/shopify/oauth/callback"
@@ -50,36 +62,42 @@ def install_app(data: dict):
             "authUrl": auth_url
         }
 
+        update_page({"store_name": shop}, {"id": page_id})
+
         return response
     except Exception as e:
         print(e)
         return {"error": e}
 
 def oauth_callback(code, shop, state):
-    apiKey = load["SHOPIFY_API_KEY"]
-    apiSecret = load["SHOPIFY_API_SECRET"]
+    try:
+        apiKey = load["SHOPIFY_API_KEY"]
+        apiSecret = load["SHOPIFY_API_SECRET"]
 
-    accessTokenUrl = f"https://{shop}/admin/oauth/access_token"
-    accessParams = {
-        "client_id": apiKey,
-        "client_secret": apiSecret,
-        "code": code,
-    }
+        accessTokenUrl = f"https://{shop}/admin/oauth/access_token"
+        accessParams = {
+            "client_id": apiKey,
+            "client_secret": apiSecret,
+            "code": code,
+        }
 
-    response = requests.post(accessTokenUrl, params=urllib.parse.urlencode(accessParams))
-    data = response.json()
+        response = requests.post(accessTokenUrl, params=urllib.parse.urlencode(accessParams))
+        data = response.json()
 
-    access_token = data["access_token"]
-    store_name = shop.split(".")[0]
+        access_token = data["access_token"]
+        store_name = shop.split(".")[0]
 
-    store = find_one_store({store_name: store_name})
+        store = find_one_store({store_name: store_name})
 
-    if not store:
-        return {"message": "Store not found"}
-    
-    update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
-    
-    return response.json()
+        if not store:
+            return {"message": "Store not found"}
+        
+        update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
+        
+        return response.json()
+    except Exception as e:
+        print(e)
+        return {"error": e}
 
 def build_query(model, filters):
     clauses = []
