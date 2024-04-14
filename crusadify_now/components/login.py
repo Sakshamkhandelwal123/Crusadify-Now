@@ -2,6 +2,8 @@ import reflex as rx
 from ..baseState import State
 import requests
 
+from .helper import BACKEND_ROUTE
+
 
 class LoginState(State):
     """Handle login form submission and redirect to dashboard."""
@@ -12,9 +14,7 @@ class LoginState(State):
 
     async def handle_login(self, form_data):
         self.isLoading = True
-        data = requests.post(
-            f"https://fc56-112-196-47-10.ngrok-free.app/login", json=form_data
-        ).json()
+        data = requests.post(f"{BACKEND_ROUTE}/login", json=form_data).json()
         print("github", data)
 
         if data[1] == 200:
