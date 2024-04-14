@@ -10,6 +10,49 @@ from crusadify_now.components.editor import quoteTextarea
 from crusadify_now.components.editor import image_grid
 
 
+import reflex as rx
+import requests
+from ..components.helper import BACKEND_ROUTE
+from typing import List
+from ..components.create_new import NewSiteState
+
+
+class TemplateState(NewSiteState):
+
+    page: dict = {}
+
+    def get_page(self):
+        print("get-page", self.router.page.raw_path.split("/")[2])
+        page = requests.get(
+            f"{BACKEND_ROUTE}/get-page",
+            json={"pageId": self.router.page.raw_path.split("/")[2]},
+        ).json()
+        self.page = page[0]
+        print(page)
+
+    async def on_publish(self):
+        self.get_page()
+        print(
+            'self.currentPage["store_name"]',
+            {"userId": self.user_id, "storeName": self.page["store_name"]},
+        )
+
+        data = requests.post(
+            f"{BACKEND_ROUTE}/publish-page",
+            json={
+                "userId": self.user_id,
+                "storeName": self.page["store_name"],
+                "pageId": self.page["id"],
+                "bodyHtml": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>",
+            },
+        ).json()
+        print("data", data)
+        if data[1] == 200:
+
+            yield [rx.redirect("/login")]
+            self.user_id = ""
+
+
 def floating_edit_button():
     return rx.button(
         rx.image(
@@ -49,7 +92,11 @@ def template1() -> rx.Component:
     return rx.vstack(
         rx.hstack(
             rx.text("Panel"),
-            rx.button("Publish", style=style.publish_btn_style),
+            rx.button(
+                "Publish",
+                style=style.publish_btn_style,
+                on_click=TemplateState.on_publish,
+            ),
             width="100%",
             justify="between",
             align="center",
