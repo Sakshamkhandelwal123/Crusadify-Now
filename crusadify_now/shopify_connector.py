@@ -8,7 +8,6 @@ import uuid
 from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
-import json
 
 load = dotenv_values()
 
@@ -81,38 +80,6 @@ def oauth_callback(code, shop, state):
     update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
     
     return response.json()
-
-def publish_page(data: dict):
-    try:
-        print(data)
-        shop = data["storeName"]
-        access_token = data["accessToken"]
-        page_name = data["pageName"]
-        headers = {
-            'X-Shopify-Access-Token': access_token,
-            'Content-Type': 'application/json'
-        }
-        payload = json.dumps({
-            "page": {
-                "title": f"{page_name}",
-                "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>",
-                "metafields": [
-                {
-                    "key": "new",
-                    "value": "new value",
-                    "type": "single_line_text_field",
-                    "namespace": "global"
-                }
-                ]
-            }
-        })
-        res = requests.post(f"https://{shop}.myshopify.com/admin/api/2024-01/pages.json", headers=headers, data=payload)
-        print(res)
-        print(res.json())
-        return res.json()
-    except Exception as e:
-        print(e)
-        return {"error": e}
 
 def build_query(model, filters):
     clauses = []
