@@ -5,57 +5,35 @@ from openai import OpenAI
 schema = {
   "type": "object",
   "properties": {
-    "header": {
-      "type": "string",
-      "description": "Generated based on the provided name and tag."
-    },
-    "body": {
+    "primaryColor": {"type": "string"},
+    "secondaryColor": {"type": "string"},
+    "tertiaryColor": {"type": "string"},
+    "logo": {"type": "string"},
+    "hero": {
       "type": "object",
       "properties": {
-        "section": {
-          "type": "string",
-          "description": "A detailed section crafted from the user description and Shopify store details."
+        "text": {"type": "string"},
+        "subtext": {"type": "string"},
+        "image": {"type": "string"}
+      }
+    },
+    "bodySections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "img": {"type": "string"},
+          "text": {"type": "string"}
         }
       }
     },
-    "footer": {
-      "type": "string",
-      "description": "Footer content reflective of the Shopify store details."
-    },
-    "images": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "uri",
-        "description": "Relevant images generated or included as needed."
-      }
-    }
+    "quote": {"type": "string"},
+    "storeUrl": {"type": "string"},
+    "storeName": {"type": "string"}
   },
-  "required": ["header", "body", "footer"],
-  "input": {
-    "tag": {
-      "type": "string",
-      "description": "A tag to guide the theme or focus of the generated content."
-    },
-    "name": {
-      "type": "string",
-      "description": "A name from which the header is partially derived."
-    },
-    "description": {
-      "type": "string",
-      "description": "A detailed description to form the basis of the body section."
-    },
-    "shopifyStoreDetails": {
-      "type": "object",
-      "properties": {
-        "storeName": {"type": "string"},
-        "ownerName": {"type": "string"},
-        "productTypes": {"type": "array", "items": {"type": "string"}}
-      },
-      "description": "Details about a Shopify store that influence the footer and potentially other content."
-    }
-  }
+  "required": ["primaryColor", "secondaryColor", "tertiaryColor", "logo", "hero", "bodySections", "quote", "storeUrl", "storeName"]
 }
+
 
 
 class OpenAi:
@@ -92,6 +70,8 @@ class OpenAi:
             "role": "user",
             "content": f"Generate a json for a web page web page with a header: '{header}', a body section: '{body_section}', and a footer: '{footer}'. you can include relevant images. and make sure the content is engaging and informative. also, consider the tag: '{tag}'. make sure the content is structured and visually appealing. You can make changes to the content as needed. follow this schema to he t, fill all the details in the schema. {schema}"
         }
+
+        print(user_prompt)
 
         # Call the OpenAI API
         completion = self.client.chat.completions.create(
