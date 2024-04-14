@@ -48,8 +48,11 @@ class OpenAi:
         print('calling...')
 
         # Call the OpenAI API to generate the content
+        # model types use as needed
+        # model="gpt-3.5-turbo",
+        # model="gpt-4", 
         completion = self.client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             
             messages=[
                 {"role": "system", "content": system_message},
