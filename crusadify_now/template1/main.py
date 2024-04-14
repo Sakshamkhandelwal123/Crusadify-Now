@@ -43,7 +43,6 @@ def floating_preview_button():
 
 def template1() -> rx.Component:
 
-# MAke drawer scrollable !!!!
     return rx.vstack(
         # rx.hstack(
         #     rx.text("Panel"),
@@ -56,8 +55,8 @@ def template1() -> rx.Component:
         rx.drawer.root(
             rx.drawer.trigger(floating_edit_button()),
             rx.drawer.portal(
-                rx.scroll_area(
                 rx.drawer.content(
+                rx.scroll_area(
                     rx.flex(
                         rx.drawer.close(rx.box("Close")),
                         rx.text("Style", font_weight="bold", font_size="1.5em", padding="1em 0"),
@@ -72,7 +71,7 @@ def template1() -> rx.Component:
                         ),
                         align_items="start",
                         direction="column",
-                    ),
+                    )),
                     top="auto",
                     left="auto",
                     height="100%",
@@ -80,7 +79,7 @@ def template1() -> rx.Component:
                     padding="2em",
                     background_color="white",
                     border="1px solid black",
-                ))
+                )
             ),
             rx.hstack(
                 rx.box(
