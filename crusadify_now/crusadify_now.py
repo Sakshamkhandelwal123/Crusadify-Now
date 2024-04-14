@@ -6,6 +6,7 @@ from crusadify_now import style
 import reflex as rx
 
 from .shopify_connector import Store, install_app, oauth_callback, publish_page
+from .s3 import upload
 from .user import User, login, signup
 from .components.header import header
 from .components.headerNext import headerNext
@@ -38,3 +39,5 @@ app.api.add_api_route("/shopify/oauth/callback", oauth_callback, methods=["GET"]
 app.api.add_api_route("/login", login, methods=["POST"])
 app.api.add_api_route("/signup", signup, methods=["POST"])
 app.api.add_api_route("/publish-page", publish_page, methods=["POST"])
+app.api.add_api_route("/upload", upload, methods=["POST"])
+
