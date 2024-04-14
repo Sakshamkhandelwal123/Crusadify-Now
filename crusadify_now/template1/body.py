@@ -5,7 +5,11 @@ from crusadify_now.editorState import EditorState
 def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, bodySectionKey, isReverse = False) -> rx.Component:
     return rx.box(
         rx.flex(
-            rx.image(src=bodyFeatureImg, max_width=["300px","300px","400px","500px","600px"]),
+            rx.image(
+                src=bodyFeatureImg, 
+                max_width=["300px","300px","400px","500px","600px"], 
+                on_click = EditorState.set_content(bodyFeatureImg, bodySectionKey + "Img"), 
+                border = rx.cond( EditorState.currentKey == bodySectionKey + "Img", "1px solid black", "none")),
             rx.html(
                 bodyFeatureTxt, 
                 style=style.hero_sub_txt_style, 
@@ -15,7 +19,7 @@ def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, bodySectionKey, isReverse
                     "1px solid black",
                     "none"
                 ),
-                on_click=EditorState.set_content(bodyFeatureTxt, bodySectionKey)
+                on_click=EditorState.set_content(bodyFeatureTxt, bodySectionKey + "Txt")
                 ),
             width="100%",
             align="center",
@@ -30,9 +34,9 @@ def bodyFeatureSection(bodyFeatureTxt, bodyFeatureImg, bodySectionKey, isReverse
 
 def body(secondaryColor, tertiaryColor) -> rx.Component:
     return rx.vstack(
-        bodyFeatureSection(EditorState.bodySection1Txt, "/template1/single-can.webp", "bodySection1Txt"),
-        bodyFeatureSection(EditorState.bodySection2Txt, "/template1/multiple-cans.webp","bodySection2Txt", True),
-        bodyFeatureSection(EditorState.bodySection3Txt, "/template1/pour-purple.webp", "bodySection3Txt"),
+        bodyFeatureSection(EditorState.bodySection1Txt, EditorState.bodySection1Img, "bodySection1"),
+        bodyFeatureSection(EditorState.bodySection2Txt, EditorState.bodySection2Img,"bodySection2", True),
+        bodyFeatureSection(EditorState.bodySection3Txt, EditorState.bodySection3Img, "bodySection3"),
         rx.center(
             rx.text(
                 '"' + EditorState.quote + '"',

@@ -7,6 +7,7 @@ from crusadify_now.template1.footer import footer
 from crusadify_now.editorState import EditorState
 from crusadify_now.components.editor import editor
 from crusadify_now.components.editor import quoteTextarea
+from crusadify_now.components.editor import image_grid
 
 def floating_edit_button():
     return rx.button(
@@ -59,9 +60,13 @@ def template1() -> rx.Component:
                         rx.drawer.close(rx.box("Close")),
                         rx.text("Style", font_weight="bold", font_size="1.5em", padding="1em 0"),
                         rx.cond(
-                            (EditorState.currentKey) == "quote",
-                            quoteTextarea(),
-                            editor(),
+                            ((EditorState.currentKey) == "bodySection1Img") | ((EditorState.currentKey) == "bodySection2Img") | ((EditorState.currentKey) == "bodySection3Img") | ((EditorState.currentKey) == "heroImg"),
+                            rx.box(image_grid()),
+                            rx.cond(
+                                (EditorState.currentKey) == "quote",
+                                quoteTextarea(),
+                                editor()
+                            )
                         ),
                         align_items="start",
                         direction="column",
