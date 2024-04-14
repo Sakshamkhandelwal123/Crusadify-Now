@@ -10,7 +10,7 @@ def header()->rx.Component:
               rx.flex(
   rx.image(src="/logo.png", width="80px"),
                   rx.flex(
-                                                      rx.button("Login",style={"padding":"18px","width":"84px","margin":"12px","font-size":"18px"}),
+                                                      rx.button("Login",  on_click=lambda: rx.redirect('/login') ,style={"padding":"18px","width":"84px","margin":"12px","font-size":"18px","cursor":"pointer"}),
                                                         rx.button("Logout",style={"padding":"18px","width":"84px","margin":"12px","font-size":"18px"}),
 
                       

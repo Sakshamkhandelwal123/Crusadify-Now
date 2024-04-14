@@ -10,6 +10,8 @@ from .components.mainSection import mainSection
 from .components.footer import footer
 from .template1.main import template1
 
+from .components.login import login
+from .components.signup import signup
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction/"
 filename = f"{config.app_name}/{config.app_name}.py"
@@ -32,3 +34,5 @@ app = rx.App()
 app.add_page(index)
 app.add_page(template1)
 
+app.add_page(login)
+app.add_page(signup)
