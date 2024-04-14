@@ -6,7 +6,6 @@ from passlib.context import CryptContext
 import uuid
 import jwt
 from dotenv import dotenv_values
-import importlib
 
 load = dotenv_values()
 
@@ -54,7 +53,7 @@ def register(data: dict):
       return {"message": "User already exists"}, 200
   except Exception as e:
       print(e)
-      return {"error": e}
+      return {"error": e}, 500
 
 def signin(data: dict):
   try:
@@ -83,16 +82,14 @@ def signin(data: dict):
       return {"message": "Invalid password"}, 401
   except Exception as e:
       print(e)
-      return {"error": e}
+      return {"error": e}, 500
 
 def logout(data: dict):
     try:
       if not data or not data["userId"]:
         return {"message": "Please provide user id"}, 400
-      
-      module = importlib.import_module("module")
         
-      user = module.find_one_user({"id": data["userId"]})
+      user = find_one_user({"id": data["userId"]})
 
       if not user:
           return {"message": "User not found"}, 404
@@ -107,7 +104,7 @@ def logout(data: dict):
       return {"message": "Token deleted successfully"}, 200
     except Exception as e:
       print(e)
-      return {"error": e}
+      return {"error": e}, 500
 
 def get_user_details(data: dict):
     try:
@@ -127,7 +124,7 @@ def get_user_details(data: dict):
       return user, 200
     except Exception as e:
       print(e)
-      return {"error": e}
+      return {"error": e}, 500
 
 def build_query(model, filters):
     clauses = []
@@ -161,6 +158,7 @@ def create_token(data):
         token = Authentication(**data)
         session.add(token)
         session.commit()
+        session.refresh(token)
 
         return token
     

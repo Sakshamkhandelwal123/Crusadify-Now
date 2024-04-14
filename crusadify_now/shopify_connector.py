@@ -9,7 +9,8 @@ from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
 from .shopify_page import update_page
-import importlib
+from fastapi.responses import RedirectResponse
+import json
 
 load = dotenv_values()
 
@@ -37,9 +38,9 @@ def install_app(data: dict):
         if not shop or not user_id or not page_id:
             return {"message": "Please provide store name, user id and page id"}, 400
         
-        module = importlib.import_module("module")
+        from .user import find_one_user
         
-        user = module.find_one_user({"id": data["userId"]})
+        user = find_one_user({"id": user_id})
 
         if not user:
             return {"message": "User not found"}, 404
@@ -55,8 +56,11 @@ def install_app(data: dict):
             return {"message": "App already installed"}, 200
 
         nonce = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        redirect_uri = "http://localhost:8000/shopify/oauth/callback"
-        auth_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={shopify_api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={nonce}"
+        redirect_uri = "https://fc56-112-196-47-10.ngrok-free.app/shopify/oauth/callback"
+
+        state = f"{nonce}+{page_id}"
+
+        auth_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={shopify_api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={state}"
 
         response = {
             "authUrl": auth_url
@@ -67,7 +71,7 @@ def install_app(data: dict):
         return response
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def oauth_callback(code, shop, state):
     try:
@@ -92,12 +96,12 @@ def oauth_callback(code, shop, state):
         if not store:
             return {"message": "Store not found"}
         
-        update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
-        
-        return response.json()
+        update_store({ "access_token": access_token, "is_app_install": True, "state": state.split(" ")[0] }, {store_name: store_name})
+
+        return RedirectResponse(f'https://071f-112-196-47-10.ngrok-free.app/template1/{state.split(" ")[1]}', status_code=302)
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def build_query(model, filters):
     clauses = []
@@ -121,6 +125,7 @@ def create_store(data):
         store = Store(**data)
         session.add(store)
         session.commit()
+        session.refresh(store)
 
         return store
 

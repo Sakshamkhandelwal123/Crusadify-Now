@@ -25,7 +25,7 @@ def get_template(data: dict):
         return template, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
     
 def get_all_templates():
     try:
@@ -34,7 +34,7 @@ def get_all_templates():
         return templates, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def create_page_template(data: dict):
     try:
@@ -51,7 +51,7 @@ def create_page_template(data: dict):
         return template, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
         
 def update_template(data: dict):
     try:
@@ -68,7 +68,7 @@ def update_template(data: dict):
         return template, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def build_query(model, filters):
     clauses = []
@@ -102,6 +102,7 @@ def create_template(data):
         template = Template(**data)
         session.add(template)
         session.commit()
+        session.refresh(template)
 
         return template
 

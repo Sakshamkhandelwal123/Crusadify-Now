@@ -4,7 +4,7 @@ import reflex as rx
 from datetime import datetime
 from sqlalchemy import and_, DateTime, JSON
 from sqlmodel import Field, Column
-import importlib
+import uuid
 
 class Page(rx.Model, table=True):
     __tablename__ = "pages"
@@ -15,26 +15,26 @@ class Page(rx.Model, table=True):
     meta: dict = Field(sa_column=Column(JSON, nullable=True, default={}))
     page_name: str = Field(nullable=True)
     page_handle: str = Field(nullable=True)
-    store_name: str = Field(nullable=False)
+    store_name: str = Field(nullable=True)
     tag: str = Field(nullable=False)
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False))
     updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=datetime.now, nullable=False, onupdate=datetime.now))
 
 def create_shopify_page(data: dict):
     try:
-        if not data or data["siteName"] or data["userId"] or data["tag"]:
+        if not data or not data["siteName"] or not data["userId"] or not data["tag"]:
             return {"message": "Please provide site name, user id and tag"}, 400
         
-        module = importlib.import_module("module")
+        from .user import find_one_user
         
-        user = module.find_one_user({"id": data["userId"]})
+        user = find_one_user({"id": data["userId"]})
 
         if not user:
             return {"message": "User not found"}, 404
         
         page = create_page(
             {
-                "id": data["id"], 
+                "id": str(uuid.uuid4()), 
                 "site_name": data["siteName"], 
                 "user_id": data["userId"], 
                 "tag": data["tag"]
@@ -44,7 +44,7 @@ def create_shopify_page(data: dict):
         return page, 201
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def update_page(data: dict):
     try:
@@ -61,25 +61,27 @@ def update_page(data: dict):
         return page, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def publish_page(data: dict):
     try:
+        print(data)
         shop = data["storeName"]
         user_id = data["userId"]
         page_id = data["pageId"]
 
-        if not shop or not user_id:
-            return {"message": "Please provide store name, page name and user id"}, 400
+        if not shop or not user_id or not page_id:
+            return {"message": "Please provide store name, page id and user id"}, 400
         
-        module = importlib.import_module("module")
+        from .user import find_one_user
+        from .shopify_connector import find_one_store
         
-        user = module.find_one_user({"id": user_id})
+        user = find_one_user({"id": data["userId"]})
 
         if not user:
             return {"message": "User not found"}, 404
 
-        store_data = module.find_one_store({"store_name": shop, "user_id": user_id})
+        store_data = find_one_store({"store_name": shop, "user_id": user_id})
 
         if not store_data:
             return {"message": "Store not found"}, 404
@@ -119,16 +121,16 @@ def publish_page(data: dict):
         return {"response": json_response, "url": f"https://{shop}.myshopify.com/pages/{json_response.handle}"}
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
     
 def get_all_pages(data: dict):
     try:
         if not data["userId"]:
             return {"message": "Please provide user id"}, 400
         
-        module = importlib.import_module("module")
+        from .user import find_one_user
         
-        user = module.find_one_user({"id": data["userId"]})
+        user = find_one_user({"id": data["userId"]})
 
         if not user:
             return {"message": "User not found"}, 404
@@ -138,7 +140,7 @@ def get_all_pages(data: dict):
         return pages, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
     
 def get_page(data: dict):
     try:
@@ -153,7 +155,7 @@ def get_page(data: dict):
         return page, 200
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
     
 def build_query(model, filters):
     clauses = []
@@ -187,6 +189,7 @@ def create_page(data):
         page = Page(**data)
         session.add(page)
         session.commit()
+        session.refresh(page)
 
         return page
 
