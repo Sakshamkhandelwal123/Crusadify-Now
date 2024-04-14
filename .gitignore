@@ -3,6 +3,4 @@
 .web
 __pycache__/
 venv/
-.venv/
-.venv/
 .env
