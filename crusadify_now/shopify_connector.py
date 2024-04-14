@@ -1,16 +1,17 @@
-import reflex as rx
+import uuid
 import random
 import string
-from sqlalchemy import and_, Column, DateTime
 import requests
 import urllib.parse
-import uuid
+import reflex as rx
 from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
-from .shopify_page import update_page
+from sqlalchemy import and_, Column, DateTime
 from fastapi.responses import RedirectResponse
-import json
+
+from .shopify_page import update_page
+from .components.helper import FRONTEND_ROUTE
 
 load = dotenv_values()
 
@@ -98,7 +99,7 @@ def oauth_callback(code, shop, state):
         
         update_store({ "access_token": access_token, "is_app_install": True, "state": state.split(" ")[0] }, {store_name: store_name})
 
-        return RedirectResponse(f'https://071f-112-196-47-10.ngrok-free.app/template1/{state.split(" ")[1]}', status_code=302)
+        return RedirectResponse(f'{FRONTEND_ROUTE}/template1/{state.split(" ")[1]}', status_code=302)
     except Exception as e:
         print(e)
         return {"error": e}, 500

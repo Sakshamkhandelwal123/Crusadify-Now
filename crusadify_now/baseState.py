@@ -1,7 +1,6 @@
 import reflex as rx
 import requests
 
-
 class State(rx.State):
     menu_visible = False
 

@@ -1,10 +1,11 @@
 import json
+import uuid
 import requests
 import reflex as rx
 from datetime import datetime
-from sqlalchemy import and_, DateTime, JSON
 from sqlmodel import Field, Column
-import uuid
+from sqlalchemy import and_, DateTime, JSON
+
 from .models.open_ai import OpenAi
 
 class Page(rx.Model, table=True):
@@ -71,12 +72,12 @@ def update_page(data: dict):
 
 def publish_page(data: dict):
     try:
-        print(data)
         shop = data["storeName"]
+        page_name = data["pageName"]
         user_id = data["userId"]
         page_id = data["pageId"]
 
-        if not shop or not user_id or not page_id:
+        if not shop or not page_name or not user_id or not page_id:
             return {"message": "Please provide store name, page id and user id"}, 400
         
         from .user import find_one_user
@@ -102,20 +103,12 @@ def publish_page(data: dict):
             'Content-Type': 'application/json'
         }
 
-        body_html = data["bodyHtml"] #<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>
+        body_html = data["bodyHtml"]
 
         payload = json.dumps({
             "page": {
-                "title": page.page_name,
+                "title": page_name,
                 "body_html": body_html,
-                "metafields": [
-                    {
-                        "key": "new",
-                        "value": "new value",
-                        "type": "single_line_text_field",
-                        "namespace": "global"
-                    }
-                ]
             }
         })
 
@@ -123,7 +116,7 @@ def publish_page(data: dict):
 
         json_response = response.json()
 
-        update_page({"page_handle": json_response.handle})
+        update_page({"page_handle": json_response['page']['handle'], "page_name": page_name}, {"id": page_id})
         return {"response": json_response, "url": f"https://{shop}.myshopify.com/pages/{json_response.handle}"}
     except Exception as e:
         print(e)
