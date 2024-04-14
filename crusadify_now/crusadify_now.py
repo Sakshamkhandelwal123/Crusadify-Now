@@ -12,6 +12,7 @@ from .components.login import login
 from .components.signup import signup
 from .components.create_new import create_new
 from .components.dashboard import dashboard
+from .components.all_templates import all_templates
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction/"
 filename = f"{config.app_name}/{config.app_name}.py"
@@ -39,3 +40,4 @@ app.add_page(login)
 app.add_page(signup)
 app.add_page(create_new)
 app.add_page(dashboard)
+app.add_page(all_templates)
