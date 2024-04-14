@@ -1,22 +1,48 @@
 import reflex as rx
 from crusadify_now import style
+from crusadify_now.editorState import EditorState
 
-def heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
+def heroSection() -> rx.Component:
     return rx.flex(
-        rx.text(heroTxt, style=style.hero_txt_style),
-        rx.text(heroSubTxt, style=style.hero_sub_txt_style),
-        rx.button(heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(storeUrl)),
+        rx.html(
+            EditorState.heroTxt,
+            border = rx.cond(
+                (EditorState.currentKey) == "heroTxt",
+                "1px solid black",
+                "none"
+            ),      
+            on_click=lambda: EditorState.set_content(EditorState.heroTxt, "heroTxt")
+        ),        
+        rx.html(
+            EditorState.heroSubTxt,
+            border = rx.cond(
+                (EditorState.currentKey) == "heroSubTxt",
+                "1px solid black",
+                "none"
+            ),      
+            on_click=EditorState.set_content(EditorState.heroSubTxt, "heroSubTxt")),
+        rx.button(
+            EditorState.heroBtnTxt, 
+            style=style.hero_btn_style, 
+            on_click=lambda: rx.redirect(EditorState.storeUrl)
+            ),
         flex_direction="column",
+        text_align=["center", "center", "left", "left", "left"],
     )
 
-def heroImage(heroImg) -> rx.Component:
-    return  rx.image(src=heroImg, max_width=[ "300px","400px","400px","600px","800px"])
+def heroImage() -> rx.Component:
+    return  rx.image(
+                src=EditorState.heroImg, 
+                max_width=[ "300px","400px","400px","600px","800px"], 
+                on_click=EditorState.set_content(EditorState.heroImg, "heroImg"), 
+                border=rx.cond(EditorState.currentKey == "heroImg", "1px solid black", "none")
+            )
     
-def header(heroTxt, heroSubTxt, heroBtnTxt, storeUrl) -> rx.Component:
+def header() -> rx.Component:
     return rx.box(
         rx.flex(
-            heroSection(heroTxt, heroSubTxt, heroBtnTxt, storeUrl),
-            heroImage("/template1/beige.png"),
+            heroSection(),
+            heroImage(),
             align="center",
             justify="center",
             spacing="4",
