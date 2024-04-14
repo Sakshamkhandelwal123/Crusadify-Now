@@ -81,3 +81,17 @@ quote_txt_style = dict(
     text_align="center", 
     text_decoration_thickness="10px",
 )
+
+publish_btn_style = dict(
+    border="1px solid black", 
+    background_color="transparent", 
+    padding="10px 20px",
+    border_radius="24px",
+    color="black",
+    font_size="18px",
+    transition="0.2s",
+    _hover=dict(
+        background_color="black", 
+        color="white"
+    )
+)
