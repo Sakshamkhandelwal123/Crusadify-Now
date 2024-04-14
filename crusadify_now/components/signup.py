@@ -2,6 +2,7 @@ from __future__ import annotations
 import reflex as rx
 from ..baseState import State
 import requests
+from .helper import BACKEND_ROUTE
 
 
 class RegistrationState(State):
@@ -12,9 +13,7 @@ class RegistrationState(State):
 
     async def handle_registration(self, form_data):
         print("formdata", form_data)
-        data = requests.post(
-            f"https://6aae-112-196-47-10.ngrok-free.app/signup", json=form_data
-        ).json()
+        data = requests.post(f"{BACKEND_ROUTE}/signup", json=form_data).json()
         print("github", data)
         if data[1] == 201:
             yield [rx.redirect("/dashboard"), RegistrationState.set_success(False)]
@@ -37,7 +36,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="name",
                         id="name",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -49,7 +47,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="email_id",
                         id="email",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -61,7 +58,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="password",
                         id="password",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                         type="password",
                     ),
