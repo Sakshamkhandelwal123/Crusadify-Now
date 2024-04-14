@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import and_, DateTime, JSON
 from sqlmodel import Field, Column
 import uuid
+from .models.open_ai import OpenAi
 
 class Page(rx.Model, table=True):
     __tablename__ = "pages"
@@ -41,7 +42,12 @@ def create_shopify_page(data: dict):
             }
         )
 
-        return page, 201
+        openai = OpenAi()    
+    
+        response = openai.generate_content(data["tag"], "", user.name, {})
+
+        update_page({"meta": json.loads(response)}, {"id": page.id})
+        return {"page": page, "response": json.loads(response)}, 201
     except Exception as e:
         print(e)
         return {"error": e}, 500

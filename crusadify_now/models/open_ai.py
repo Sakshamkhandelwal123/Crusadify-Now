@@ -53,6 +53,7 @@ class OpenAi:
         # model="gpt-4", 
         completion = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
+            response_format={ "type": "json_object" },
             
             messages=[
                 {"role": "system", "content": system_message},
@@ -68,8 +69,8 @@ class OpenAi:
 # Example usage:
 if __name__ == "__main__":
     # Initialize the content generator with the OpenAI client
-    openai = OpenAi()
+    openai = OpenAi()    
     
     response = openai.generate_content("health", "A store that sells health products", "John", {"storeName": "HealthStore", "ownerName": "John Doe", "productTypes": ["health products", "supplements"]})
-    
+
     print(response)
