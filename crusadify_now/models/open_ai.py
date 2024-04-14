@@ -90,7 +90,7 @@ class OpenAi:
         # Create a user prompt to guide the content generation
         user_prompt = {
             "role": "user",
-            "content": f"Generate a web page with a header: '{header}', a body section: '{body_section}', and a footer: '{footer}'. you can include relevant images. and make sure the content is engaging and informative. also, consider the tag: '{tag}'. make sure the content is structured and visually appealing. You can make changes to the content as needed."
+            "content": f"Generate a json for a web page web page with a header: '{header}', a body section: '{body_section}', and a footer: '{footer}'. you can include relevant images. and make sure the content is engaging and informative. also, consider the tag: '{tag}'. make sure the content is structured and visually appealing. You can make changes to the content as needed. follow this schema to he t, fill all the details in the schema. {schema}"
         }
 
         # Call the OpenAI API
