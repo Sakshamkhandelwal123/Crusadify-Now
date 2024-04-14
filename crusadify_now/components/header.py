@@ -4,7 +4,7 @@ from ..baseState import State
 
 def header() -> rx.Component:
     menu_visible = State.menu_visible
-    print("meeee", menu_visible)
+
     return rx.box(
         rx.desktop_only(
             rx.hstack(

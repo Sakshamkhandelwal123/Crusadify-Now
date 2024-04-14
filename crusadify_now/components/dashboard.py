@@ -1,16 +1,29 @@
 import reflex as rx
+from ..baseState import State
+from .login import require_login
+import requests
+from .helper import BACKEND_ROUTE
+from typing import List
+
+
+class DashboardState(State):
+
+    success: bool = False
+    error_message: str = ""
+    token: str = ""
 
 
 @rx.page(route="/dashboard")
+@require_login
 def dashboard():
+
     return rx.vstack(
         rx.flex(
-            rx.link(
-                rx.button(
-                    "Logout",
-                ),
-                href="/login",
-                # todo: clear cookie
+            # rx.link(
+            rx.button(
+                "Logout",
+                on_click=State.logout,
+                cursor="pointer",
             ),
             justify_content="end",
             align_items="center",
@@ -99,32 +112,39 @@ def dashboard():
                     ),
                     width=["100%", "100%", "100%", "50%", "50%"],
                 ),
-                rx.button(
-                    "Create new site",
-                    padding="16px",
-                    margin_right="20px",
+                rx.link(
+                    rx.button(
+                        "Create new site",
+                        padding="16px",
+                        margin_right="20px",
+                        cursor="pointer",
+                    ),
+                    href="/create_new",
                 ),
                 justify="center",
                 align_items="center",
             ),
             rx.cond(
-                False == True,
-                rx.text("Render List"),
-                # rx.foreach(
-                #     State.pagesList,
-                #     lambda page: rx.hstack(
-                #         rx.flex(
-                #             rx.heading(page["page_name"]),
-                #             style={
-                #                 "align-items": "center",
-                #                 "justify-content": "center",
-                #             },
-                #         ),
-                #         style={"justify-content": "space-between"},
-                #         width="100%",
-                #     ),
-                #     spacing="1",
-                # ),
+                State.pages,
+                # rx.text("Render List"),
+                rx.foreach(
+                    State.pages,
+                    lambda page: rx.hstack(
+                        rx.flex(
+                            rx.link(
+                                rx.heading(page["site_name"]),
+                                href=f"/page/{page['id']}",
+                            ),
+                            style={
+                                "align-items": "center",
+                                "justify-content": "center",
+                            },
+                        ),
+                        style={"justify-content": "space-between"},
+                        width="100%",
+                    ),
+                    spacing="1",
+                ),
                 rx.flex(
                     rx.heading(
                         "No pages yet.",
