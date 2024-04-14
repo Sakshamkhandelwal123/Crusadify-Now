@@ -36,7 +36,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="name",
                         id="name",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -48,7 +47,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="email_id",
                         id="email",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -60,7 +58,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="password",
                         id="password",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                         type="password",
                     ),
