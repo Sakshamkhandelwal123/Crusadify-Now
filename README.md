@@ -9,6 +9,38 @@ Build shopify landing pages without writing code.
 git clone https://github.com/Sakshamkhandelwal123/Crusadify-Now.git
 ```
 
+### 1.5 Set Up Virtual Environment (Optional) 🌐
+
+It's a good practice to create a virtual environment for Python projects. This keeps your dependencies organized and separate from other projects.
+
+
+To insert an optional virtual environment setup step between steps 1 and 2 in the "Getting Started" section of your documentation, you can follow this format:
+
+Crusadify Now
+Build Shopify landing pages without writing code.
+
+Getting Started
+1. Clone the Repo ©
+bash
+Copy code
+git clone https://github.com/Sakshamkhandelwal123/Crusadify-Now.git
+1.5 Set Up Virtual Environment (Optional) 🌐
+It's a good practice to create a virtual environment for Python projects. This keeps your dependencies organized and separate from other projects.
+
+For Windows:
+
+```bash
+python -m venv venv
+.\venv\Scripts\activate
+```
+
+For macOS and Linux:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
 ### 2. Install Reflex 💻
 
 To get started with Reflex, you'll need:
