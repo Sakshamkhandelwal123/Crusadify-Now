@@ -11,7 +11,7 @@ from sqlalchemy import and_, Column, DateTime
 from fastapi.responses import RedirectResponse
 
 from .shopify_page import update_page
-from .components.helper import FRONTEND_ROUTE
+from .components.helper import FRONTEND_ROUTE, BACKEND_ROUTE
 
 load = dotenv_values()
 
@@ -57,7 +57,7 @@ def install_app(data: dict):
             return {"message": "App already installed"}, 200
 
         nonce = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        redirect_uri = "https://fc56-112-196-47-10.ngrok-free.app/shopify/oauth/callback"
+        redirect_uri = f"{BACKEND_ROUTE}/shopify/oauth/callback"
 
         state = f"{nonce}+{page_id}"
 
