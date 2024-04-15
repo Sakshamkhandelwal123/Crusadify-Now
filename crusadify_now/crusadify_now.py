@@ -15,6 +15,7 @@ from .shopify_page import (
     update_page,
     publish_page,
 )
+from .s3 import upload
 from .template import (
     Template,
     get_template,
@@ -84,3 +85,6 @@ app.api.add_api_route("/get-template", get_template, methods=["GET"])
 app.api.add_api_route("/get-all-templates", get_all_templates, methods=["GET"])
 app.api.add_api_route("/create-template", create_template, methods=["POST"])
 app.api.add_api_route("/update-template", update_template, methods=["PUT"])
+
+# S3 Routes
+app.api.add_api_route("/upload", upload, methods=["POST"])
