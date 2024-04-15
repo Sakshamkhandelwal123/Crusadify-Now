@@ -6,11 +6,12 @@ import json
 import base64
 import urllib
 
+
 class State(rx.State):
     menu_visible = False
     user_id: str = ""
     pages: List[dict] = []
-    custom_cookie: str = rx.Cookie(name="page", path="/", same_site="lax", secure=False)
+    crusadify_token: str = rx.Cookie(name="crusadify_token", path="/", same_site="lax", secure=False)
 
     def toggle_menu(self):
         self.menu_visible = not self.menu_visible
