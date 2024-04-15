@@ -7,8 +7,21 @@ import reflex as rx
 
 from .shopify_connector import Store, install_app, oauth_callback
 from .user import User, Authentication, signin, register, logout, get_user_details
-from .shopify_page import Page, get_page, get_all_pages, create_shopify_page, update_page, publish_page
-from .template import Template, get_template, get_all_templates, create_template, update_template
+from .shopify_page import (
+    Page,
+    get_page,
+    get_all_pages,
+    create_shopify_page,
+    update_page,
+    publish_page,
+)
+from .template import (
+    Template,
+    get_template,
+    get_all_templates,
+    create_template,
+    update_template,
+)
 from .components.header import header
 from .components.headerNext import headerNext
 from .components.mainSection import mainSection
@@ -22,6 +35,7 @@ from .components.dashboard import dashboard
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction/"
 filename = f"{config.app_name}/{config.app_name}.py"
+
 
 def index() -> rx.Component:
     return rx.center(
@@ -37,6 +51,7 @@ def index() -> rx.Component:
             "font-weight": "400",
         },
     )
+
 
 app = rx.App()
 app.add_page(index)

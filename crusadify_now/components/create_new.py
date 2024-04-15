@@ -1,6 +1,10 @@
 import reflex as rx
 from ..baseState import State
 import requests
+from .helper import BACKEND_ROUTE
+from .login import require_login
+from ..editorState import EditorState
+from fastapi import Response
 
 
 class NewSiteState(State):
@@ -8,15 +12,47 @@ class NewSiteState(State):
     success: bool = False
     error_message: str = ""
     isVisible: bool = False
+    currentPage: dict = {}
 
-    async def on_submit(self, form_data):
-        print("formdata", form_data)
+    async def create_page(self, form_data):
 
-    def toggle_visibility(self):
+        data = requests.post(
+            f"{BACKEND_ROUTE}/create-page",
+            json={
+                "siteName": form_data["site_name"],
+                "userId": self.user_id,
+                "tag": form_data["tag"],
+            },
+        ).json()
+
+        self.currentPage = data[0]["page"]
         self.isVisible = not self.isVisible
+        return [
+            State.set_custom_cookie(data[0]["response"]),
+        ]
+
+    def connect_with_shopify(self, form_data):
+        data = requests.get(
+            f"{BACKEND_ROUTE}/install-app",
+            json={
+                "storeName": form_data["store_name"],
+                "userId": self.user_id,
+                "pageId": self.currentPage["id"],
+            },
+        ).json()
+
+        if (
+            data
+            and data.__contains__("message")
+            and data[0]["message"] == "App already installed"
+        ):
+            return rx.redirect(f'/template1/{self.currentPage["id"]}')
+
+        return rx.redirect(data["authUrl"])
 
 
 @rx.page(route="/create_new")
+@require_login
 def create_new() -> rx.Component:
 
     isVisible = NewSiteState.isVisible
@@ -57,42 +93,9 @@ def create_new() -> rx.Component:
                         default_value="Fashion",
                         padding_bottom="32px",
                     ),
-                    rx.box(
-                        rx.text(
-                            "Create page",
-                            on_click=NewSiteState.toggle_visibility,
-                        ),
-                        width="30%",
-                        border_radius="12px",
-                        padding="8px",
-                        background_color="#0090FF",
-                        color="white",
+                    rx.button(
+                        "Create page",
                         cursor="pointer",
-                    ),
-                    rx.cond(
-                        isVisible,
-                        rx.box(
-                            rx.text(
-                                "Store name",
-                                color="hsl(240, 5%, 64.9%)",
-                                padding_top="16px",
-                                padding_bottom="16px",
-                            ),
-                            rx.input(
-                                placeholder="store name",
-                                id="store_name",
-                                justify_content="center",
-                                margin_top="2px",
-                                margin_bottom="4px",
-                            ),
-                            rx.box(
-                                rx.button(
-                                    "Connect with Shopify",
-                                    cursor="pointer",
-                                ),
-                                padding_top="24px",
-                            ),
-                        ),
                     ),
                 ),
                 style={
@@ -102,14 +105,41 @@ def create_new() -> rx.Component:
                     "padding": "36px",
                     "border-radius": "12px",
                     "background-color": "rgba(237, 231, 225)",
+                    "margin-bottom": "0px",
                 },
-                on_submit=NewSiteState.on_submit,
+                on_submit=NewSiteState.create_page,
+            ),
+            rx.cond(
+                isVisible,
+                rx.box(
+                    rx.form(
+                        rx.box(
+                            rx.input(
+                                placeholder="store name",
+                                id="store_name",
+                                justify_content="center",
+                                margin_top="2px",
+                                margin_bottom="4px",
+                            ),
+                            padding_bottom="12px",
+                        ),
+                        rx.box(
+                            rx.button(
+                                "Connect with Shopify",
+                                cursor="pointer",
+                            ),
+                            padding_bottom="36px",
+                        ),
+                        on_submit=NewSiteState.connect_with_shopify,
+                    ),
+                ),
             ),
             align_items="center",
         ),
         margin_top="10vh",
         margin_x="auto",
         border_color="gray.300",
+        background_color="rgba(237, 231, 225)",
         border_radius=10,
     )
 
