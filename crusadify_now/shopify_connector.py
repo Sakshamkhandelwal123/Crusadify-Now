@@ -1,14 +1,17 @@
-import reflex as rx
+import uuid
 import random
 import string
-from sqlalchemy import and_, Column, DateTime
 import requests
 import urllib.parse
-import uuid
+import reflex as rx
 from sqlmodel import Field
 from datetime import datetime
 from dotenv import dotenv_values
-import json
+from sqlalchemy import and_, Column, DateTime
+from fastapi.responses import RedirectResponse
+
+from .shopify_page import update_page
+from .components.helper import FRONTEND_ROUTE, BACKEND_ROUTE
 
 load = dotenv_values()
 
@@ -30,89 +33,76 @@ def install_app(data: dict):
         scopes = "read_products,read_orders,read_analytics,read_orders,read_product_feeds,read_product_listings,read_products,write_content,read_content"
 
         shop = data["storeName"]
-        email = data["email"]
+        user_id = data["userId"]
+        page_id = data["pageId"]
 
-        if not shop:
-            return {"message": "Store name is missing"}
+        if not shop or not user_id or not page_id:
+            return {"message": "Please provide store name, user id and page id"}, 400
+        
+        from .user import find_one_user
+        
+        user = find_one_user({"id": user_id})
+
+        if not user:
+            return {"message": "User not found"}, 404
 
         store_data = find_one_store({"store_name": shop})
 
         if not store_data:
-            create_store({"id": str(uuid.uuid4()), "user_id": "1", "store_name": shop, "email": email})
+            create_store({"id": str(uuid.uuid4()), "user_id": user_id, "store_name": shop})
 
         if store_data and store_data.is_app_install:
-            return {"message": "App already installed"}
+            update_page({"store_name": shop}, {"id": page_id})
+
+            return {"message": "App already installed"}, 200
 
         nonce = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        redirect_uri = "http://localhost:8000/shopify/oauth/callback"
-        auth_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={shopify_api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={nonce}"
+        redirect_uri = f"{BACKEND_ROUTE}/shopify/oauth/callback"
+
+        state = f"{nonce}+{page_id}"
+
+        auth_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={shopify_api_key}&scope={scopes}&redirect_uri={redirect_uri}&state={state}"
 
         response = {
             "authUrl": auth_url
         }
 
+        update_page({"store_name": shop}, {"id": page_id})
+
         return response
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def oauth_callback(code, shop, state):
-    apiKey = load["SHOPIFY_API_KEY"]
-    apiSecret = load["SHOPIFY_API_SECRET"]
-
-    accessTokenUrl = f"https://{shop}/admin/oauth/access_token"
-    accessParams = {
-        "client_id": apiKey,
-        "client_secret": apiSecret,
-        "code": code,
-    }
-
-    response = requests.post(accessTokenUrl, params=urllib.parse.urlencode(accessParams))
-    data = response.json()
-
-    access_token = data["access_token"]
-    store_name = shop.split(".")[0]
-
-    store = find_one_store({store_name: store_name})
-
-    if not store:
-        return {"message": "Store not found"}
-    
-    update_store({ "access_token": access_token, "is_app_install": True, "state": state }, {store_name: store_name})
-    
-    return response.json()
-
-def publish_page(data: dict):
     try:
-        print(data)
-        shop = data["storeName"]
-        access_token = data["accessToken"]
-        page_name = data["pageName"]
-        headers = {
-            'X-Shopify-Access-Token': access_token,
-            'Content-Type': 'application/json'
+        apiKey = load["SHOPIFY_API_KEY"]
+        apiSecret = load["SHOPIFY_API_SECRET"]
+
+        accessTokenUrl = f"https://{shop}/admin/oauth/access_token"
+        accessParams = {
+            "client_id": apiKey,
+            "client_secret": apiSecret,
+            "code": code,
         }
-        payload = json.dumps({
-            "page": {
-                "title": f"{page_name}",
-                "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>",
-                "metafields": [
-                {
-                    "key": "new",
-                    "value": "new value",
-                    "type": "single_line_text_field",
-                    "namespace": "global"
-                }
-                ]
-            }
-        })
-        res = requests.post(f"https://{shop}.myshopify.com/admin/api/2024-01/pages.json", headers=headers, data=payload)
-        print(res)
-        print(res.json())
-        return res.json()
+
+        response = requests.post(accessTokenUrl, params=urllib.parse.urlencode(accessParams))
+        data = response.json()
+
+        access_token = data["access_token"]
+        store_name = shop.split(".")[0]
+
+        store = find_one_store({store_name: store_name})
+
+        if not store:
+            return {"message": "Store not found"}
+        
+        update_store({ "access_token": access_token, "is_app_install": True, "state": state.split(" ")[0] }, {store_name: store_name})
+
+        return RedirectResponse(f'{FRONTEND_ROUTE}/template1/{state.split(" ")[1]}', status_code=302)
     except Exception as e:
         print(e)
-        return {"error": e}
+        return {"error": e}, 500
 
 def build_query(model, filters):
     clauses = []
@@ -136,6 +126,7 @@ def create_store(data):
         store = Store(**data)
         session.add(store)
         session.commit()
+        session.refresh(store)
 
         return store
 

@@ -1,37 +1,15 @@
 import reflex as rx
 import requests
-from .components.helper import BACKEND_ROUTE
-from typing import List
-import json
-import base64
-import urllib
 
 
-class State(rx.State):
-    menu_visible = False
-    user_id: str = ""
-    pages: List[dict] = []
-    crusadify_token: str = rx.Cookie(name="crusadify_token", path="/", same_site="lax", secure=False)
-
-    def toggle_menu(self):
-        self.menu_visible = not self.menu_visible
-
-    async def logout(self):
-        data = requests.post(
-            f"{BACKEND_ROUTE}/logout", json={"userId": self.user_id}
-        ).json()
-        if data[1] == 200:
-
-            yield [rx.redirect("/login")]
-            self.user_id = ""
+class EditorState(rx.State):
 
     primaryColor = "#EE8F4E"
     secondaryColor = "#7ACAA9"
     tertiaryColor = "#F1EBDC"
 
     logo = "/template1/logo.png"
-    heroTxt = ""
-    # '<span style="font-size: 72px"><strong>A new kind of soda</strong></span>'
+    heroTxt = '<span style="font-size: 72px"><strong>A new kind of soda</strong></span>'
     heroSubTxt = (
         '<span style="font-size: 26px">20+ refreshing flavours, with less sugar</span>'
     )

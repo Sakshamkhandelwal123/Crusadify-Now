@@ -2,6 +2,7 @@ from __future__ import annotations
 import reflex as rx
 from ..baseState import State
 import requests
+from .helper import BACKEND_ROUTE
 
 
 class RegistrationState(State):
@@ -9,18 +10,61 @@ class RegistrationState(State):
 
     success: bool = False
     error_message: str = ""
+    token: str = ""
+    is_loading: bool = False
+    isdisabled: bool = True
+
+    def getAllPages(self):
+
+        data = requests.get(
+            f"{BACKEND_ROUTE}/get-all-pages", json={"userId": self.user_id}
+        ).json()
+
+        if data[1] == 200:
+            self.pages = data[0]
+            return data
 
     async def handle_registration(self, form_data):
-        print("formdata", form_data)
-        data = requests.post(
-            f"https://6aae-112-196-47-10.ngrok-free.app/signup", json=form_data
-        ).json()
-        print("github", data)
+
+        if (
+            form_data["name"] == "None"
+            or form_data["email"] == "None"
+            or form_data["password"] == "None"
+        ):
+
+            if form_data.email is None:
+                self.error_message = "Email cannot be empty"
+                yield rx.set_focus("email_id")
+                return
+            password = form_data["password"]
+            if password is None:
+                self.error_message = "Password cannot be empty"
+                yield rx.set_focus("password")
+                return
+            if form_data.name is None:
+                self.error_message = "Name cannot be empty"
+                yield rx.set_focus("name")
+                return
+        self.is_loading = True
+        self.isdisabled = False
+        data = requests.post(f"{BACKEND_ROUTE}/signup", json=form_data).json()
+        if data[1] == 500:
+            self.error_message = "Please fill all details"
         if data[1] == 201:
-            yield [rx.redirect("/dashboard"), RegistrationState.set_success(False)]
+
+            user_data = requests.get(
+                f"{BACKEND_ROUTE}/get-user-details", json=data[0]
+            ).json()
+            self.user_id = user_data[0]["id"]
+            self.getAllPages()
+            yield [rx.redirect("/dashboard"), State.set_crusadify_token(self.user_id)]
+        self.is_loading = False
+
+    def resetState(self):
+        self.error_message = ""
 
 
-@rx.page(route="/signup")
+@rx.page(route="/signup", on_load=RegistrationState.resetState)
 def signup() -> rx.Component:
 
     register_form = rx.box(
@@ -37,7 +81,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="name",
                         id="name",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -49,7 +92,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="email_id",
                         id="email",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                     ),
                     rx.text(
@@ -61,7 +103,6 @@ def signup() -> rx.Component:
                     rx.input(
                         placeholder="password",
                         id="password",
-                        border_color="hsl(240,3.7%,15.9%)",
                         justify_content="center",
                         type="password",
                     ),
@@ -72,7 +113,15 @@ def signup() -> rx.Component:
                             width="100%",
                         ),
                         padding_top="14px",
-                        padding_bottom="24px",
+                        padding_bottom="14px",
+                    ),
+                    rx.box(
+                        rx.text(
+                            RegistrationState.error_message,
+                            color="red",
+                            id="error-message",
+                        ),
+                        align_items="center",
                     ),
                     rx.link("Login here", href="/login"),
                 ),
