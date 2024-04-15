@@ -1,10 +1,11 @@
 import reflex as rx
-from crusadify_now.editorState import EditorState
+
+from crusadify_now.baseState import State
 
 def editor():
     return rx.vstack(
         rx.editor(
-            set_contents=EditorState.content,
+            set_contents=State.content,
             set_options=rx.EditorOptions(
             button_list=[
                 ["font"],
@@ -19,7 +20,7 @@ def editor():
                 "/",
             ]
             ),
-            on_change=EditorState.handle_change,
+            on_change=State.handle_change,
             placeholder="Select text to edit",
             width="26em",
             height="26em",
@@ -29,13 +30,13 @@ def editor():
 
 def quoteTextarea():
     return rx.text_area(
-        value = EditorState.quote,
-        on_change=EditorState.set_quote,
+        value = State.quote,
+        on_change=State.set_quote,
         width="26em",
     )
 
 def img(url: str):
-    return rx.image(src=url, on_click=EditorState.set_bodySectionImg(url), border=rx.cond(EditorState.content == url, "1px solid black", "none"))
+    return rx.image(src=url, on_click=State.set_bodySectionImg(url), border=rx.cond(State.content == url, "1px solid black", "none"))
 
 def image_grid():
     image_urls = [

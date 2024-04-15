@@ -34,7 +34,7 @@ class TemplateState(State):
     <title>Health Landing Page</title>
     <style>
         body {{
-            background-color: #3DB8C1;
+            background-color: {self.primaryColor};
             color: #F4A261;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -53,7 +53,7 @@ class TemplateState(State):
         }}
         footer {{
             text-align: center;
-            background-color: #2A9D8F;
+            background-color: {self.secondaryColor};
             padding: 20px;
         }}
         footer img {{
@@ -93,6 +93,7 @@ class TemplateState(State):
             json={"pageId": self.router.page.raw_path.split("/")[2]},
         ).json()
         self.page = page[0]
+        print("page",page[0]["meta"].items())
         for key, value in page[0]["meta"].items():
             self.set_initial_state(value, key)
 
@@ -165,6 +166,7 @@ def template1() -> rx.Component:
                     style=style.publish_btn_style,
                 ),
                 on_submit=TemplateState.on_publish,
+                justify="between",
             ),
             width="100%",
             justify="between",

@@ -14,6 +14,9 @@ class NewSiteState(State):
     isVisible: bool = False
     currentPage: dict = {}
 
+    def resetState(self):
+        self.isVisible = False
+
     async def create_page(self, form_data):
 
         data = requests.post(
@@ -26,10 +29,7 @@ class NewSiteState(State):
         ).json()
 
         self.currentPage = data[0]["page"]
-        self.isVisible = not self.isVisible
-        return [
-            State.set_custom_cookie(data[0]["response"]),
-        ]
+        self.isVisible = True
 
     def connect_with_shopify(self, form_data):
         data = requests.get(
@@ -51,7 +51,7 @@ class NewSiteState(State):
         return rx.redirect(data["authUrl"])
 
 
-@rx.page(route="/create_new")
+@rx.page(route="/create_new", on_load=NewSiteState.resetState)
 @require_login
 def create_new() -> rx.Component:
 
@@ -94,8 +94,13 @@ def create_new() -> rx.Component:
                         padding_bottom="32px",
                     ),
                     rx.button(
-                        "Create page",
+                        rx.cond(
+                            isVisible,
+                            "Page created successfully",
+                            "Create page",
+                        ),
                         cursor="pointer",
+                        # disabled={isVisible},
                     ),
                 ),
                 style={
