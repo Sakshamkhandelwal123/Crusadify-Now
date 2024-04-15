@@ -6,7 +6,6 @@ import json
 import base64
 import urllib
 
-
 class State(rx.State):
     menu_visible = False
     user_id: str = ""
