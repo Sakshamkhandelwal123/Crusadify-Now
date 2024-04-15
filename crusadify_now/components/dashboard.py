@@ -65,7 +65,7 @@ def dashboard():
                                     rx.link(
                                         rx.heading(page["site_name"]),
                                         rx.text(page["tag"]),
-                                        href=f"/page/{page['id']}",
+                                        href=f"/template1/{page['id']}",
                                     ),
                                     style={
                                         "align-items": "center",

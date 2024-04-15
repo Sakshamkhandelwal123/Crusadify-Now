@@ -1,23 +1,33 @@
 import reflex as rx
 from crusadify_now import style
-from crusadify_now.editorState import EditorState
+from crusadify_now.baseState import State
+
 
 def footer() -> rx.Component:
     return rx.vstack(
         rx.html(
-            EditorState.footerTxt, 
-            border = rx.cond(
-                (EditorState.currentKey) == "footerTxt",
-                "1px solid black",
-                "none"
-                ),
-            on_click=EditorState.set_content(EditorState.footerTxt, "footerTxt")
+            State.footerTxt,
+            border=rx.cond(
+                (State.currentKey) == "footerTxt", "1px solid black", "none"
             ),
-        rx.button(EditorState.heroBtnTxt, style=style.hero_btn_style, on_click=lambda: rx.redirect(EditorState.storeUrl)),
-        rx.image(src=EditorState.logo, width="150px"),
-        rx.link(EditorState.storeUrl, href=EditorState.storeUrl, font_size="24px", color= "black", text_align="center", text_decoration="underline", width="100%"),
+            on_click=State.set_content(State.footerTxt, "footerTxt"),
+        ),
+        rx.button(
+            State.heroBtnTxt,
+            style=style.hero_btn_style,
+            on_click=lambda: rx.redirect(State.storeUrl),
+        ),
+        rx.image(src=State.logo, width="150px"),
+        rx.link(
+            State.storeUrl,
+            href=State.storeUrl,
+            font_size="24px",
+            color="black",
+            text_align="center",
+            text_decoration="underline",
+            width="100%",
+        ),
         align="center",
         width="100%",
         padding="60px 0px",
     )
-    
