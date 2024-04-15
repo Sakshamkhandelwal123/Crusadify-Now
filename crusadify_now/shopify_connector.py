@@ -57,7 +57,7 @@ def install_app(data: dict):
             return {"message": "App already installed"}, 200
 
         nonce = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        redirect_uri = "https://fc56-112-196-47-10.ngrok-free.app/shopify/oauth/callback"
+        redirect_uri = "https://1d55-112-196-47-10.ngrok-free.app/shopify/oauth/callback"
 
         state = f"{nonce}+{page_id}"
 

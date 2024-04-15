@@ -32,12 +32,15 @@ class LoginState(State):
 
             self.user_id = user_data[0]["id"]
             self.getAllPages()
-            yield [rx.redirect("/dashboard"), LoginState.set_isLoading(False)]
+            yield [rx.redirect("/dashboard"), State.set_crusadify_token(self.user_id)]
             self.isLoading = False
             self.error_message = ""
         else:
             self.isLoading = False
             self.error_message = data[0]["message"]
+        self.isLoading = False
+
+        # return [State.set_crusadify_token(self.user_id),]
 
     def redir(self):
         """Redirect to the redirect_to route if logged in, or to the login page if not."""
@@ -52,70 +55,77 @@ class LoginState(State):
         elif page == "/login":
             return rx.redirect(self.redirect_to or "/")
 
+    def resetState(self):
+        self.error_message = ""
 
-@rx.page(route="/login")
+
+@rx.page(route="/login", on_load=LoginState.resetState)
 def login():
 
     button_text = rx.cond(LoginState.isLoading, "Logging in............", "Login")
-    return rx.center(
-        rx.vstack(
-            rx.form(
-                rx.vstack(
-                    rx.flex(
-                        rx.input.root(
-                            rx.input(
-                                name="email",
-                                placeholder="Enter your email id...",
-                                bg="white",
+    return rx.cond(
+        LoginState.isLoading,
+        rx.center(rx.chakra.spinner()),
+        rx.center(
+            rx.vstack(
+                rx.form(
+                    rx.vstack(
+                        rx.flex(
+                            rx.input.root(
+                                rx.input(
+                                    name="email",
+                                    placeholder="Enter your email id...",
+                                    bg="white",
+                                    style={"padding": "24px"},
+                                ),
+                                width="100%",
+                                style={"margin-bottom": "24px"},
+                            ),
+                            rx.input.root(
+                                rx.input(
+                                    name="password",
+                                    placeholder="Enter your password...",
+                                    bg="white",
+                                    style={"padding": "24px"},
+                                ),
+                                width="100%",
+                                style={"margin-bottom": "24px"},
+                            ),
+                            rx.button(
+                                "Login",
                                 style={"padding": "24px"},
+                                cursor="pointer",
                             ),
-                            width="100%",
-                            style={"margin-bottom": "24px"},
-                        ),
-                        rx.input.root(
-                            rx.input(
-                                name="password",
-                                placeholder="Enter your password...",
-                                bg="white",
-                                style={"padding": "24px"},
+                            rx.box(
+                                rx.text(
+                                    LoginState.error_message,
+                                    color="red",
+                                    id="error-message",
+                                ),
+                                justify_content="center",
+                                align_items="center",
                             ),
-                            width="100%",
-                            style={"margin-bottom": "24px"},
-                        ),
-                        rx.button(
-                            button_text,
-                            style={"padding": "24px"},
-                            cursor="pointer",
-                        ),
-                        rx.box(
-                            rx.text(
-                                LoginState.error_message,
-                                color="red",
-                                id="error-message",
+                            rx.link(
+                                "Signup here",
+                                href="/signup",
+                                style={"padding-top": "24px"},
+                                cursor="pointer",
                             ),
-                            justify_content="center",
-                            align_items="center",
-                        ),
-                        rx.link(
-                            "Signup here",
-                            href="/signup",
-                            style={"padding-top": "24px"},
-                            cursor="pointer",
-                        ),
-                        style={"flex-direction": "column", "width": "100%"},
-                    )
+                            style={"flex-direction": "column", "width": "100%"},
+                        )
+                    ),
+                    on_submit=LoginState.handle_login,
+                    reset_on_submit=True,
+                    width="100%",
                 ),
-                on_submit=LoginState.handle_login,
-                reset_on_submit=True,
-                width="100%",
+                style={
+                    "margin": "80px",
+                    "width": "50%",
+                    "padding": "36px",
+                    "border-radius": "12px",
+                    "background-color": "rgba(237, 231, 225)",
+                },
             ),
-            style={
-                "margin": "80px",
-                "width": "50%",
-                "padding": "36px",
-                "border-radius": "12px",
-                "background-color": "rgba(237, 231, 225)",
-            },
         ),
     )
 

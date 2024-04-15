@@ -11,6 +11,7 @@ class RegistrationState(State):
     success: bool = False
     error_message: str = ""
     token: str = ""
+    is_loading: bool = False
     isdisabled: bool = True
 
     def getAllPages(self):
@@ -44,6 +45,7 @@ class RegistrationState(State):
                 self.error_message = "Name cannot be empty"
                 yield rx.set_focus("name")
                 return
+        self.is_loading = True
         self.isdisabled = False
         data = requests.post(f"{BACKEND_ROUTE}/signup", json=form_data).json()
         if data[1] == 500:
@@ -55,10 +57,14 @@ class RegistrationState(State):
             ).json()
             self.user_id = user_data[0]["id"]
             self.getAllPages()
-            yield [rx.redirect("/dashboard"), RegistrationState.set_success(False)]
+            yield [rx.redirect("/dashboard"), State.set_crusadify_token(self.user_id)]
+        self.is_loading = False
+
+    def resetState(self):
+        self.error_message = ""
 
 
-@rx.page(route="/signup")
+@rx.page(route="/signup", on_load=RegistrationState.resetState)
 def signup() -> rx.Component:
 
     register_form = rx.box(
